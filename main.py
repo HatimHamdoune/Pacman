@@ -30,6 +30,48 @@ class Game:
         for i in range(4):
             self.ghosts.append(Sprites.Ghost("SpriteSheet.png", starting_ghost_position + (ghost_height * i), number_of_sprites, ghost_width, ghost_height))
 
+    def main_loop(self):
+        while True:
+            self.check_events()
+            self.check_input()
+            self.refresh_screen()
+    
+    def check_input(self):
+        for event in pygame.event.get():
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.QUIT:
+                    exit()
+                if event.key == pygame.K_a:
+                    self.pacman.looking_left = True
+                if event.key == pygame.K_d:
+                    self.pacman.looking_right = True
+                if event.key == pygame.K_w:
+                    self.pacman.looking_up = True
+                if event.key == pygame.K_s:
+                    self.pacman.looking_down = True
+    
+    def check_events(self):
+        self.pacman.check_wall()
+        self.pacman.move()
+         
+    def refresh_screen(self):
+        self.window.fill((0, 0, 0))
+        
+
+class Map:
+    def __init__(self) -> None:
+        self.map_image = pygame.image.load("maze.png")
+        self.wall_coordinates = {}
+    
+    def initialize_map(self):
+        for i in range(Game.WINDOW_SIZE):
+            for j in range(Game.WINDOW_SIZE):
+                current_pixel = self.map_image.get_at((i, j))
+                if current_pixel != 0:
+                    if i not in self.wall_coordinates:
+                        self.wall_coordinates[i] = [j]
+                    else:
+                        self.wall_coordinates[i].append(j)
     
 if __name__ == "__main__":
     Game()

@@ -15,6 +15,7 @@ class Sprite:
         self._height = sprite_height
         self._current_model = 0
         self._model = self.sprite_collection[self._current_model]
+        self.can_move = True
 
     @property
     def coordinates(self):
@@ -54,8 +55,22 @@ class Pacman(Sprite):
         self.x_coordinate = 1
         self.y_coordinate = 1
 
-
+    def move(self):
+        if self.looking_down:
+            self.y_coordinate += 1
+        if self.looking_up:
+            self.y_coordinate -= 1
+        if self.looking_right:
+            self.x_coordinate += 1
+        if self.looking_left:
+            self.x_coordinate -= 1
     
+    def check_wall(self, map):
+        if self.x_coordinate + self._width in map.wall_coordinates:
+            if self.y_coordinate in map.wall_coordinates[self.x_coordinate]:
+                self.can_move = False    
+        else:
+            self.can_move = True
 
     
 class Ghost(Sprite):
