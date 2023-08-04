@@ -4,20 +4,26 @@ import pygame
 class Sprite:
     def __init__(self, filename, sprite_location, n_sprites, sprite_width, sprite_height) -> None:
         self.spritesheet = SpriteSheet(filename, sprite_width, sprite_height)
-        self.y_coordinate = 16
-        self.x_coordinate = 16
+        self.y_coordinate = 14
+        self.x_coordinate = 14
         self.temp_y = self.y_coordinate
         self.temp_x = self.x_coordinate
         self.looking_right = True
         self.looking_left = False
         self.looking_up = False
         self.looking_down = False
+        self.wants_to_go_right = False
+        self.wants_to_go_left = False
+        self.wants_to_go_up = False
+        self.wants_to_go_down = False
         self._sprites = self.spritesheet.get_sprites(sprite_location, n_sprites)
-        self._width = 37
-        self._height = 37
-        self._current_model = 0
+        self._width = self.sprite_collection[0].get_width()
+        self._height = self.sprite_collection[0].get_height()
+        self.offset = 12
+        self._current_model = 1
         self._model = self.sprite_collection[self._current_model]
         self.can_move = True
+        self.wiggle_room = 5
 
     @property
     def coordinates(self):
@@ -33,7 +39,7 @@ class Sprite:
 
     @property
     def hitbox(self):
-        return self.temp_x, self.temp_x + self._width, self.temp_y, self.temp_y + self._height
+        return self.x_coordinate + self.wiggle_room, self.x_coordinate + self._width - self.offset, self.y_coordinate + self.wiggle_room, self.y_coordinate + self._height - self.offset
 
     def touches_hitbox(self, second_object):
         left_edge_touches = self.hitbox[0] <= second_object.hitbox[1] < self.hitbox[1]
@@ -42,6 +48,59 @@ class Sprite:
         bottom_edge_touches = self.hitbox[2] <= second_object.hitbox[2] < self.hitbox[3]
         return  (left_edge_touches or right_edge_touches) and (top_edge_touches or bottom_edge_touches)
 
+    def turn(self, direction, map):
+        if direction == "left":
+            if self.left_is_free(map):
+                print("doesnt touch edge")
+                self.reset_directions()
+                self.looking_left = True
+        if direction == "right":
+            if self.right_is_free(map):
+                self.reset_directions()
+                self.looking_right = True 
+        if direction == "up":
+            if self.up_is_free(map):
+                self.reset_directions()
+                self.looking_up = True
+        if direction == "down":
+            if self.down_is_free(map):
+                self.reset_directions()
+                self.looking_down = True     
+    
+    def left_is_free(self, map):
+
+        for i in range(self.hitbox[0] - self.wiggle_room, self.hitbox[0]):
+            if i in map.wall_coordinates:
+                for j in range(self.hitbox[2], self.hitbox[3]):
+                    print(j)
+                    if j in map.wall_coordinates[i]:
+                        print("touches edge")
+                        return False
+        return True         
+
+    def right_is_free(self, map):
+        for i in range(self.hitbox[1], self.hitbox[1] + self.wiggle_room):
+            if i in map.wall_coordinates:
+                for j in range(self.hitbox[2], self.hitbox[3]+1):
+                    if j in map.wall_coordinates[i]:
+                        return False
+        return True
+
+    def up_is_free(self, map):
+        for i in range(self.hitbox[0], self.hitbox[1] + self.wiggle_room):
+            if i in map.wall_coordinates:
+                for j in range(self.hitbox[2], self.hitbox[2] - self.wiggle_room, -1):
+                    if j in map.wall_coordinates[i]:
+                        return False
+        return True
+
+    def down_is_free(self, map):
+        for i in range(self.hitbox[0], self.hitbox[1] + self.wiggle_room):
+            if i in map.wall_coordinates:
+                for j in range(self.hitbox[3], self.hitbox[3] + self.wiggle_room, -1):
+                    if j in map.wall_coordinates[i]:
+                        return False
+        return True
    
     def next_model(self, desired_model):
         self._current_model = self.sprites[desired_model]
@@ -61,31 +120,66 @@ class Pacman(Sprite):
         self.y_coordinate = 1
 
     def move(self, map):
-        if self.looking_down:
-            self.temp_y += 1
-        if self.looking_up:
-            self.temp_y -= 1
-        if self.looking_right:
-            self.temp_x += 1
-        if self.looking_left:
-            self.temp_x -= 1
         self.check_wall(map)
         if self.can_move:
-            self.x_coordinate = self.temp_x
-            self.y_coordinate = self.temp_y
-        else:
-            self.temp_x = self.x_coordinate
-            self.temp_y = self.y_coordinate
+            if self.looking_down:
+                self.y_coordinate += 1
+            if self.looking_up:
+                self.y_coordinate -= 1
+            if self.looking_right:
+                self.x_coordinate += 1
+            if self.looking_left:
+                self.x_coordinate -= 1
 
+    def wall_to_the_left(self, map):
+        x = self.hitbox[0] + self.wiggle_room
+        if x in map.wall_coordinates:
+            for y in range(self.hitbox[2], self.hitbox[3]):
+                if y in map.wall_coordinates[x]:
+                    return True
+        return False 
+
+    def wall_to_the_right(self, map):
+        x = self.hitbox[1] + self.wiggle_room
+        if x in map.wall_coordinates:
+            for y in range(self.hitbox[2], self.hitbox[3]):
+                if y in map.wall_coordinates[x]:
+                    return True
+        return False
     
-    def check_wall(self, map):
-        for x in range(self.hitbox[0], self.hitbox[1]):
+    def wall_on_top(self, map):
+        y = self.hitbox[2] - self.wiggle_room
+        for x in range(self.hitbox[0], self.hitbox[1] + self.wiggle_room):
             if x in map.wall_coordinates:
-                for y in range(self.hitbox[2], self.hitbox[3]):
-                    if y in map.wall_coordinates[x]:
-                        self.can_move = False
-                        return
-        self.can_move = True
+                if y in map.wall_coordinates[x]:
+                    return True
+        return False
+
+    def wall_on_bot(self, map):
+        y = self.hitbox[3] + self.wiggle_room
+        for x in range(self.hitbox[0], self.hitbox[1] + self.wiggle_room):
+            if x in map.wall_coordinates:
+                if y in map.wall_coordinates[x]:
+                    return True
+        return False
+
+    def check_wall(self, map):
+        if self.looking_left:
+            if self.wall_to_the_left(map):
+                self.can_move = False
+        if self.looking_right:
+            if self.wall_to_the_right(map):
+                self.can_move = False
+        if self.looking_up:
+            if self.wall_on_top(map):
+                self.can_move = False
+        if self.looking_down:
+            if self.wall_on_bot(map):
+                self.can_move = False
+        
+
+
+
     
 class Ghost(Sprite):
     def __init__(self, filename, sprite_location, n_sprites, sprite_width, sprite_height) -> None:

@@ -2,8 +2,8 @@ import Sprites
 import pygame
 
 class Game:
-    WINDOW_HEIGHT = 680
-    WINDOW_WIDTH = 578
+    WINDOW_HEIGHT = 760
+    WINDOW_WIDTH = 650
     def __init__(self) -> None:
         self.window_size = Game.WINDOW_WIDTH, Game.WINDOW_HEIGHT
         self.window = pygame.display.set_mode(self.window_size)
@@ -47,17 +47,13 @@ class Game:
                     exit()
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_a:
-                    self.pacman.reset_directions()
-                    self.pacman.looking_left = True
+                    self.pacman.turn("left", self.map)
                 elif event.key == pygame.K_d:
-                    self.pacman.reset_directions()
-                    self.pacman.looking_right = True
+                    self.pacman.turn("right", self.map)
                 elif event.key == pygame.K_w:
-                    self.pacman.reset_directions()
-                    self.pacman.looking_up = True
+                    self.pacman.turn("up", self.map)
                 elif event.key == pygame.K_s:
-                    self.pacman.reset_directions()
-                    self.pacman.looking_down = True
+                    self.pacman.turn("down", self.map)
     
     def check_events(self):
         self.pacman.move(self.map)
