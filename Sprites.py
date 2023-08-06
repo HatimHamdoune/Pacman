@@ -10,6 +10,7 @@ class Character:
         self.looking_up = False
         self.looking_down = False
         self.sprites = {}
+        self.can_move = True
 
     @property
     def coordinates(self):
@@ -23,10 +24,18 @@ class Character:
     def sprite_collection(self):
         return self._sprites
 
+    
     @property
-    def hitbox(self):
-        hitbox_trim = 9
-        return self.x_coordinate + hitbox_trim, self.x_coordinate + self._width - hitbox_trim, self.y_coordinate + hitbox_trim, self.y_coordinate + self._height - hitbox_trim
+    def position_in_matrix(self):
+        front_error_room = 5
+        if self.looking_left:
+            return (self.hitbox[0] - front_error_room) // 20, self.hitbox[2] // 20
+        if self.looking_right:
+            return (self.hitbox[1] + front_error_room) // 20, self.hitbox[2] // 20
+        if self.looking_up:
+            return self.hitbox[0] // 20, (self.hitbox[2] - front_error_room) // 20 
+        if self.looking_down:
+            return self.hitbox[0] // 20, (self.hitbox[3] + front_error_room) // 20
 
     def rotate_90_degrees(self, sprites):
         rotated_sprites = []
@@ -44,8 +53,55 @@ class Character:
     def reset_directions(self):
         self.looking_down, self.looking_up, self.looking_left, self.looking_right = False, False, False, False
 
+    def check_for_walls(self, map):
+        if self.looking_left:
+            if self.left_is_free(map):
+                self.can_move = True
+        if self.looking_right:
+            if self.right_is_free(map):
+                self.can_move = True
+        if self.looking_up:
+            if self.up_is_free(map):
+                 self.can_move = True
+        if self.looking_down:
+            if self.down_is_free(map):
+                  self.can_move = True
+
+    def left_is_free(self, map):
+        turn_direction_x = self.position_in_matrix[0] - 1
+        turn_direction_y = self.position_in_matrix[1]
+        if map.map_matrix[turn_direction_y][turn_direction_x] != 0:
+            print("left is free")
+            return True
+        else:
+            return False
+
+    def right_is_free(self, map):
+        turn_direction_x = self.position_in_matrix[0] + 1
+        turn_direction_y = self.position_in_matrix[1]
+        if map.map_matrix[turn_direction_y][turn_direction_x] != 0:
+            return True
+        else:
+            return False
+
+    def up_is_free(self, map):
+        turn_direction_x = self.position_in_matrix[0]
+        turn_direction_y = self.position_in_matrix[1] - 1
+        if map.map_matrix[turn_direction_y][turn_direction_x] != 0:
+            return True
+        else:
+            return False
+
+    def down_is_free(self, map):
+        turn_direction_x = self.position_in_matrix[0]
+        turn_direction_y = self.position_in_matrix[1] + 1
+        if map.map_matrix[turn_direction_y][turn_direction_x] != 0:
+            return True
+        else:
+            return False
+
     def move(self, map):
-        self.check_walls(map)
+        self.check_for_walls(map)
         if self.can_move:
             if self.looking_down:
                 self.y_coordinate += 1
@@ -55,10 +111,29 @@ class Character:
                 self.x_coordinate += 1
             if self.looking_left:
                 self.x_coordinate -= 1
-        if self.x_coordinate > map.width:
-            self.x_coordinate = 0 - self._width
-        if self.x_coordinate < -self._width:
-            self.x_coordinate = map.width
+        
+
+    def turn(self, direction, map):
+        if direction == "left":
+            if self.left_is_free(map):
+                self.reset_directions()
+                self.looking_left = True
+        if direction == "right":
+            if self.right_is_free(map):
+                self.reset_directions()
+                self.looking_right = True
+        if direction == "up":
+            if self.up_is_free(map):
+                self.reset_directions()
+                self.looking_up = True
+        if direction == "down":
+            if self.down_is_free(map):
+                self.reset_directions()
+                self.looking_down = True
+        
+
+
+
 
 
          
@@ -67,7 +142,7 @@ class Pacman(Character):
     MODEL_WIDTH, MODEL_HEIGHT = 40 , 35
     SPRITE_LOCATION = 1140
     NUMBER_OF_MODELS = 3
-    SPAWN_X, SPAWN_Y = 12, 50
+    SPAWN_X, SPAWN_Y = 12, 12
     def __init__(self, filename) -> None:
         super().__init__(filename)
         self.x_coordinate = Pacman.SPAWN_X
@@ -79,17 +154,25 @@ class Pacman(Character):
         self.sprites["left"] = self.rotate_90_degrees(self.sprites["up"])
         self.sprites["down"] = self.rotate_90_degrees(self.sprites["left"])
         self.current_sprites = self.sprites["right"]
-        self._model = self.sprites["up"][1]
+        self._model = self.sprites["right"][1]
+
+    @property
+    def hitbox(self):
+        return self.x_coordinate, self.x_coordinate + Pacman.MODEL_WIDTH, self.y_coordinate, self.y_coordinate + Pacman.MODEL_HEIGHT
 
     def check_direction(self):
         if self.looking_right:
             self.current_sprites = self.sprites["right"]
+            self._model = self.current_sprites[1]
         if self.looking_left:
             self.current_sprites = self.sprites["left"]
+            self._model = self.current_sprites[1]
         if self.looking_down:
             self.current_sprites = self.sprites["down"]
+            self._model = self.current_sprites[1]
         if self.looking_up:
             self.current_sprites = self.sprites["up"]
+            self._model = self.current_sprites[1]
 
     
     

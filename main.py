@@ -19,8 +19,8 @@ class Game:
 
     def main_loop(self):
         while True:
-            # self.check_events()
-            # self.check_input()
+            self.check_events()
+            self.check_input()
             self.refresh_screen()
     
     def check_input(self):
@@ -30,12 +30,16 @@ class Game:
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_a:
                     self.pacman.turn("left", self.map)
+                    self.pacman.check_direction()
                 elif event.key == pygame.K_d:
                     self.pacman.turn("right", self.map)
+                    self.pacman.check_direction()
                 elif event.key == pygame.K_w:
                     self.pacman.turn("up", self.map)
+                    self.pacman.check_direction()
                 elif event.key == pygame.K_s:
                     self.pacman.turn("down", self.map)
+                    self.pacman.check_direction()
     
     def check_events(self):
         self.pacman.move(self.map)
