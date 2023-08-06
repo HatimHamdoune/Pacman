@@ -3,8 +3,8 @@ import pygame
 class Character:
     def __init__(self, filename) -> None:
         self.spritesheet = SpriteSheet(filename)
-        self.y_coordinate = 0
-        self.x_coordinate = 0
+        self.y_matrix = 0
+        self.x_matrix = 0
         self.looking_right = True
         self.looking_left = False
         self.looking_up = False
@@ -23,19 +23,6 @@ class Character:
     @property
     def sprite_collection(self):
         return self._sprites
-
-    
-    @property
-    def position_in_matrix(self):
-        front_error_room = 5
-        if self.looking_left:
-            return (self.hitbox[0] - front_error_room) // 20, self.hitbox[2] // 20
-        if self.looking_right:
-            return (self.hitbox[1] + front_error_room) // 20, self.hitbox[2] // 20
-        if self.looking_up:
-            return self.hitbox[0] // 20, (self.hitbox[2] - front_error_room) // 20 
-        if self.looking_down:
-            return self.hitbox[0] // 20, (self.hitbox[3] + front_error_room) // 20
 
     def rotate_90_degrees(self, sprites):
         rotated_sprites = []
@@ -57,60 +44,68 @@ class Character:
         if self.looking_left:
             if self.left_is_free(map):
                 self.can_move = True
+            else:
+                self.can_move = False
         if self.looking_right:
             if self.right_is_free(map):
                 self.can_move = True
+            else:
+                self.can_move = False
         if self.looking_up:
             if self.up_is_free(map):
                  self.can_move = True
+            else:
+                self.can_move = False
         if self.looking_down:
             if self.down_is_free(map):
                   self.can_move = True
+            else:
+                self.can_move = False
 
     def left_is_free(self, map):
-        turn_direction_x = self.position_in_matrix[0] - 1
-        turn_direction_y = self.position_in_matrix[1]
-        if map.map_matrix[turn_direction_y][turn_direction_x] != 0:
-            print("left is free")
+        turn_direction_x = self.x_matrix - 1
+        turn_direction_y = self.y_matrix
+        if map.map_matrix[turn_direction_y][turn_direction_x] > 0:
             return True
         else:
             return False
 
     def right_is_free(self, map):
-        turn_direction_x = self.position_in_matrix[0] + 1
-        turn_direction_y = self.position_in_matrix[1]
-        if map.map_matrix[turn_direction_y][turn_direction_x] != 0:
+        turn_direction_x = self.x_matrix + 1
+        turn_direction_y = self.y_matrix
+        if map.map_matrix[turn_direction_y][turn_direction_x] > 0:
             return True
         else:
             return False
 
     def up_is_free(self, map):
-        turn_direction_x = self.position_in_matrix[0]
-        turn_direction_y = self.position_in_matrix[1] - 1
-        if map.map_matrix[turn_direction_y][turn_direction_x] != 0:
+        turn_direction_x = self.x_matrix
+        turn_direction_y = self.y_matrix - 1
+        if map.map_matrix[turn_direction_y][turn_direction_x] > 0:
             return True
         else:
             return False
 
     def down_is_free(self, map):
-        turn_direction_x = self.position_in_matrix[0]
-        turn_direction_y = self.position_in_matrix[1] + 1
-        if map.map_matrix[turn_direction_y][turn_direction_x] != 0:
+        turn_direction_x = self.x_matrix
+        turn_direction_y = self.y_matrix + 1
+        if map.map_matrix[turn_direction_y][turn_direction_x] > 0:
             return True
         else:
             return False
 
     def move(self, map):
         self.check_for_walls(map)
+        self.check_direction()
         if self.can_move:
             if self.looking_down:
-                self.y_coordinate += 1
+                self.y_matrix += 1
             if self.looking_up:
-                self.y_coordinate -= 1
+                self.y_matrix -= 1
             if self.looking_right:
-                self.x_coordinate += 1
+                self.x_matrix += 1
             if self.looking_left:
-                self.x_coordinate -= 1
+                self.x_matrix -= 1
         
 
     def turn(self, direction, map):
@@ -139,14 +134,14 @@ class Character:
          
 
 class Pacman(Character):
-    MODEL_WIDTH, MODEL_HEIGHT = 40 , 35
+    MODEL_WIDTH, MODEL_HEIGHT = 39 , 35
     SPRITE_LOCATION = 1140
     NUMBER_OF_MODELS = 3
     SPAWN_X, SPAWN_Y = 12, 12
     def __init__(self, filename) -> None:
         super().__init__(filename)
-        self.x_coordinate = Pacman.SPAWN_X
-        self.y_coordinate = Pacman.SPAWN_Y
+        self.x_matrix = 1
+        self.y_matrix = 1
         self.invincible = False
         self.points = 0
         self.sprites["right"] = self.spritesheet.get_sprites(Pacman.SPRITE_LOCATION, Pacman.NUMBER_OF_MODELS, Pacman.MODEL_WIDTH, Pacman.MODEL_HEIGHT)
@@ -159,6 +154,14 @@ class Pacman(Character):
     @property
     def hitbox(self):
         return self.x_coordinate, self.x_coordinate + Pacman.MODEL_WIDTH, self.y_coordinate, self.y_coordinate + Pacman.MODEL_HEIGHT
+
+    @property
+    def x_coordinate(self):
+        return self.x_matrix * 20 - 8
+
+    @property
+    def y_coordinate(self):
+        return self.y_matrix * 20 - 8
 
     def check_direction(self):
         if self.looking_right:
@@ -174,8 +177,6 @@ class Pacman(Character):
             self.current_sprites = self.sprites["up"]
             self._model = self.current_sprites[1]
 
-    
-    
     def respawn(self):
         self.x_coordinate = 1
         self.y_coordinate = 1
