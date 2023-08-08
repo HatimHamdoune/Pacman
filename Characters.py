@@ -14,6 +14,7 @@ class Character:
 
     @property
     def coordinates(self):
+        #returns the character's position in the matrix
         return self.x_matrix, self.y_matrix
 
     @property
@@ -25,6 +26,7 @@ class Character:
         return self._sprites
 
     def rotate_90_degrees(self, sprites):
+        #used to rotate the character models after extracting them from the spritesheet, only used for pacman
         rotated_sprites = []
         rotation_angle = 90
         for sprite in sprites:
@@ -35,6 +37,7 @@ class Character:
         if self.coordinates == second_object.coordinates:
             return True
         return False
+
     def reset_directions(self):
         self.looking_down, self.looking_up, self.looking_left, self.looking_right = False, False, False, False
 
@@ -107,6 +110,7 @@ class Character:
         self.eat_pellets(map)
 
     def turn(self, direction, map):
+        #used the reset directions function as a switch so only the triggered direction is set to True
         if direction == "left":
             if self.left_is_free(map):
                 self.reset_directions()
@@ -182,9 +186,11 @@ class Pacman(Character):
         self.y_coordinate = 1
     
     def eat_pellets(self, map):
+        #if pacman's position has a small pellet (2) give points and change it to empty tile (1)
         if map.map_matrix[self.y_matrix][self.x_matrix] == 2:
             self.points += 10
             map.map_matrix[self.y_matrix][self.x_matrix] = 1
+        #if pacman's position has a large pellet (3) give points turn invincible mode on and change it to empty tile (1)
         elif map.map_matrix[self.y_matrix][self.x_matrix] == 3:
             self.points += 20
             self.invincible = True
@@ -220,6 +226,7 @@ class SpriteSheet:
         self.spritesheet = pygame.image.load(filename)
 
     def get_sprites(self, x_coordinate, n_sprites, character_width, character_height):
+        #gets the number of sprites to be extracted (n_sprites), and extracts sprites accordingly
         sprites = []
         for i in range(n_sprites):
             sprite = self.spritesheet.subsurface(pygame.Rect(x_coordinate + character_width * i, 0, character_width, character_height))

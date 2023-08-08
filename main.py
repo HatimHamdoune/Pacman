@@ -2,6 +2,7 @@ import Characters
 import pygame
 
 class Game:
+    #constants to represent the window size
     WINDOW_HEIGHT = 670
     WINDOW_WIDTH = 560
     def __init__(self) -> None:
@@ -9,6 +10,8 @@ class Game:
         self.window = pygame.display.set_mode(self.window_size)
         pygame.display.set_caption("Pacman")
         self.clock = pygame.time.Clock()
+        pacman_icon = pygame.image.load("pacman.ico")
+        pygame.display.set_icon(pacman_icon)
 
         self.map = Map("SpriteSheet.png", 0)
         self.pacman = Characters.Pacman("SpriteSheet.png")
@@ -61,13 +64,16 @@ class Game:
         
 
 class Map:
+    #hard coded the map dimensions and tile size
     MAP_HEIGHT = 620
     MAP_WIDTH = 560
+    TILE_SIZE = 20
     def __init__(self, filename, map_start_x) -> None:
         self.spritesheet = pygame.image.load(filename)
-        self.tile_size = 20
+        self.tile_size = Map.TILE_SIZE
         self.map_tiles = self.initialize_map(map_start_x)
-        self.empty_block = self.map_tiles[14][0] #a tile from the initiatted map
+        #a tile from the initiated map
+        self.empty_block = self.map_tiles[14][0] 
         self.map_matrix = [[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
                            [0,2,2,2,2,2,2,2,2,2,2,2,2,0,0,2,2,2,2,2,2,2,2,2,2,2,2,0],
                            [0,2,0,0,0,0,2,0,0,0,0,0,2,0,0,2,0,0,0,0,0,2,0,0,0,0,2,0],
