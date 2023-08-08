@@ -26,13 +26,13 @@ class Game:
         
 
     def main_loop(self):
-        self.new_game()
         while True:
             if not self.is_new_game:
                 self.check_events()
             self.check_input()
             self.refresh_screen()
             if self.is_new_game:
+                self.new_game()
                 pygame.time.wait(4000)
                 self.is_new_game = False
             
@@ -42,7 +42,6 @@ class Game:
         pygame.mixer.music.load("./audio/beginning.wav")
         pygame.mixer.music.play()
         
-        self.refresh_screen()
 
 
 
@@ -62,6 +61,19 @@ class Game:
     
     def check_events(self):
         self.pacman.move(self.map)
+
+    def display_ready(self):
+        ready_x_matrix, ready_y_matrix = 12, 17
+        ready_x_window = ready_x_matrix * self.map.TILE_SIZE - Scoreboard.DISTANCE_FROM_WALL 
+        ready_y_window = ready_y_matrix * self.map.TILE_SIZE - Scoreboard.DISTANCE_FROM_WALL
+        self.window.blit(self.scoreboard.ready, (ready_x_window, ready_y_window))
+    
+    def display_score(self):
+        score_x_matrix = 1
+        score_y_matrix = 32
+        score_x_window = score_x_matrix * self.map.TILE_SIZE - Scoreboard.DISTANCE_FROM_WALL 
+        score_y_window = score_y_matrix * self.map.TILE_SIZE - Scoreboard.DISTANCE_FROM_WALL
+        self.window.blit(self.scoreboard.score(self.pacman.points), (score_x_window, score_y_window))
          
     def refresh_screen(self):
         self.window.fill((0, 0, 0))
@@ -72,11 +84,9 @@ class Game:
                 else:
                     self.window.blit(self.map.map_tiles[row][column], (column * self.map.tile_size, row * self.map.tile_size))
         self.window.blit(self.pacman.model, (self.pacman.x_coordinate, self.pacman.y_coordinate))
+        self.display_score()
         if self.is_new_game:
-            ready_x_matrix, ready_y_matrix = 12, 17
-            ready_x_window = ready_x_matrix * self.map.TILE_SIZE - Scoreboard.DISTANCE_FROM_WALL 
-            ready_y_window = ready_y_matrix * self.map.TILE_SIZE - Scoreboard.DISTANCE_FROM_WALL
-            self.window.blit(self.scoreboard.ready, (ready_x_window, ready_y_window))
+            self.display_ready()      
         pygame.display.flip()
         self.clock.tick(9)
 
@@ -91,7 +101,9 @@ class Scoreboard:
         ready_message = self.font.render("Ready!", True, Game.WHITE)
         return ready_message
 
-    
+    def score(self, current_score):
+        score = self.font.render(f"{current_score} pts", True, Game.WHITE)
+        return score
 
 class Map:
     #hard coded the map dimensions and tile size
