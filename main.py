@@ -5,15 +5,20 @@ class Game:
     #constants to represent the window size
     WINDOW_HEIGHT = 670
     WINDOW_WIDTH = 560
+    #Colors
+    WHITE = (255, 255, 255)
     def __init__(self) -> None:
+        pygame.init()
         self.window_size = Game.WINDOW_WIDTH, Game.WINDOW_HEIGHT
         self.window = pygame.display.set_mode(self.window_size)
         pygame.display.set_caption("Pacman")
         self.clock = pygame.time.Clock()
         pacman_icon = pygame.image.load("pacman.ico")
         pygame.display.set_icon(pacman_icon)
+        self.is_new_game = True
 
         self.map = Map("SpriteSheet.png", 0)
+        self.scoreboard = Scoreboard()
         self.pacman = Characters.Pacman("SpriteSheet.png")
 
         self.main_loop()
@@ -23,14 +28,22 @@ class Game:
     def main_loop(self):
         self.new_game()
         while True:
-            self.check_events()
+            if not self.is_new_game:
+                self.check_events()
             self.check_input()
             self.refresh_screen()
+            if self.is_new_game:
+                pygame.time.wait(4000)
+                self.is_new_game = False
+            
     
     def new_game(self):
         pygame.mixer.init()
         pygame.mixer.music.load("./audio/beginning.wav")
         pygame.mixer.music.play()
+        
+        self.refresh_screen()
+
 
 
     def check_input(self):
@@ -59,9 +72,26 @@ class Game:
                 else:
                     self.window.blit(self.map.map_tiles[row][column], (column * self.map.tile_size, row * self.map.tile_size))
         self.window.blit(self.pacman.model, (self.pacman.x_coordinate, self.pacman.y_coordinate))
+        if self.is_new_game:
+            ready_x_matrix, ready_y_matrix = 12, 17
+            ready_x_window = ready_x_matrix * self.map.TILE_SIZE - Scoreboard.DISTANCE_FROM_WALL 
+            ready_y_window = ready_y_matrix * self.map.TILE_SIZE - Scoreboard.DISTANCE_FROM_WALL
+            self.window.blit(self.scoreboard.ready, (ready_x_window, ready_y_window))
         pygame.display.flip()
         self.clock.tick(9)
-        
+
+class Scoreboard:
+    DISTANCE_FROM_WALL = 8
+    def __init__(self) -> None:
+        self.current_score = 0
+        self.font = pygame.sysfont.Font("./joystix monospace.otf", 22)
+
+    @property
+    def ready(self):
+        ready_message = self.font.render("Ready!", True, Game.WHITE)
+        return ready_message
+
+    
 
 class Map:
     #hard coded the map dimensions and tile size

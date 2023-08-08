@@ -192,7 +192,7 @@ class Pacman(Character):
             map.map_matrix[self.y_matrix][self.x_matrix] = 1
         #if pacman's position has a large pellet (3) give points turn invincible mode on and change it to empty tile (1)
         elif map.map_matrix[self.y_matrix][self.x_matrix] == 3:
-            self.points += 20
+            self.points += 50
             self.invincible = True
             map.map_matrix[self.y_matrix][self.x_matrix] = 1
     
