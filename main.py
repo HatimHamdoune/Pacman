@@ -1,4 +1,4 @@
-import Sprites
+import Characters
 import pygame
 
 class Game:
@@ -11,18 +11,24 @@ class Game:
         self.clock = pygame.time.Clock()
 
         self.map = Map("SpriteSheet.png", 0)
-        self.pacman = Sprites.Pacman("SpriteSheet.png")
+        self.pacman = Characters.Pacman("SpriteSheet.png")
 
         self.main_loop()
 
         
 
     def main_loop(self):
+        self.new_game()
         while True:
             self.check_events()
             self.check_input()
             self.refresh_screen()
     
+    def new_game(self):
+        pygame.mixer.init()
+        pygame.mixer.music.load("./audio/beginning.wav")
+        pygame.mixer.music.play()
+
 
     def check_input(self):
         for event in pygame.event.get():
