@@ -23,6 +23,7 @@ class Game:
             self.check_input()
             self.refresh_screen()
     
+
     def check_input(self):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -60,7 +61,7 @@ class Map:
         self.spritesheet = pygame.image.load(filename)
         self.tile_size = 20
         self.map_tiles = self.initialize_map(map_start_x)
-        self.empty_block = self.map_tiles[14][0]
+        self.empty_block = self.map_tiles[14][0] #a tile from the initiatted map
         self.map_matrix = [[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
                            [0,2,2,2,2,2,2,2,2,2,2,2,2,0,0,2,2,2,2,2,2,2,2,2,2,2,2,0],
                            [0,2,0,0,0,0,2,0,0,0,0,0,2,0,0,2,0,0,0,0,0,2,0,0,0,0,2,0],

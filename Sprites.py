@@ -14,7 +14,7 @@ class Character:
 
     @property
     def coordinates(self):
-        return self.x_coordinate, self.y_coordinate
+        return self.x_matrix, self.y_matrix
 
     @property
     def model(self):
@@ -26,17 +26,15 @@ class Character:
 
     def rotate_90_degrees(self, sprites):
         rotated_sprites = []
+        rotation_angle = 90
         for sprite in sprites:
-            rotated_sprites.append(pygame.transform.rotate(sprite, 90))
+            rotated_sprites.append(pygame.transform.rotate(sprite, rotation_angle))
         return rotated_sprites
 
     def touches_hitbox(self, second_object):
-        left_edge_touches = self.hitbox[0] <= second_object.hitbox[1] < self.hitbox[1]
-        right_edge_touches = self.hitbox[0] <= second_object.hitbox[0] < self.hitbox[1]
-        top_edge_touches = self.hitbox[2] <= second_object.hitbox[3] < self.hitbox[3]
-        bottom_edge_touches = self.hitbox[2] <= second_object.hitbox[2] < self.hitbox[3]
-        return  (left_edge_touches or right_edge_touches) and (top_edge_touches or bottom_edge_touches)
-
+        if self.coordinates == second_object.coordinates:
+            return True
+        return False
     def reset_directions(self):
         self.looking_down, self.looking_up, self.looking_left, self.looking_right = False, False, False, False
 
@@ -106,7 +104,7 @@ class Character:
                 self.x_matrix += 1
             if self.looking_left:
                 self.x_matrix -= 1
-        
+        self.eat_pellets(map)
 
     def turn(self, direction, map):
         if direction == "left":
@@ -137,7 +135,8 @@ class Pacman(Character):
     MODEL_WIDTH, MODEL_HEIGHT = 39 , 35
     SPRITE_LOCATION = 1140
     NUMBER_OF_MODELS = 3
-    SPAWN_X, SPAWN_Y = 12, 12
+    DISTANCE_FROM_WALL = 8 
+    MAP_TILE_SIZE = 20
     def __init__(self, filename) -> None:
         super().__init__(filename)
         self.x_matrix = 1
@@ -157,30 +156,39 @@ class Pacman(Character):
 
     @property
     def x_coordinate(self):
-        return self.x_matrix * 20 - 8
+        return self.x_matrix * Pacman.MAP_TILE_SIZE - Pacman.DISTANCE_FROM_WALL
 
     @property
     def y_coordinate(self):
-        return self.y_matrix * 20 - 8
+        return self.y_matrix * Pacman.MAP_TILE_SIZE - Pacman.DISTANCE_FROM_WALL
 
     def check_direction(self):
         if self.looking_right:
             self.current_sprites = self.sprites["right"]
-            self._model = self.current_sprites[1]
+            self._model = self.current_sprites[2]
         if self.looking_left:
             self.current_sprites = self.sprites["left"]
-            self._model = self.current_sprites[1]
+            self._model = self.current_sprites[2]
         if self.looking_down:
             self.current_sprites = self.sprites["down"]
-            self._model = self.current_sprites[1]
+            self._model = self.current_sprites[2]
         if self.looking_up:
             self.current_sprites = self.sprites["up"]
-            self._model = self.current_sprites[1]
+            self._model = self.current_sprites[2]
+
 
     def respawn(self):
         self.x_coordinate = 1
         self.y_coordinate = 1
-
+    
+    def eat_pellets(self, map):
+        if map.map_matrix[self.y_matrix][self.x_matrix] == 2:
+            self.points += 10
+            map.map_matrix[self.y_matrix][self.x_matrix] = 1
+        elif map.map_matrix[self.y_matrix][self.x_matrix] == 3:
+            self.points += 20
+            self.invincible = True
+            map.map_matrix[self.y_matrix][self.x_matrix] = 1
     
 
     
@@ -195,15 +203,15 @@ class Pacman(Character):
 class Ghost(Character):
     def __init__(self, filename) -> None:
         super().__init__(filename)
+        
 
-    def in_proximity(self, second_object):
-        offset = 100
-        left_edge_touches = self.hitbox[0] - offset <= second_object.hitbox[1] < self.hitbox[1] + offset
-        right_edge_touches = self.hitbox[0] - offset <= second_object.hitbox[0] < self.hitbox[1] + offset
-        top_edge_touches = self.hitbox[2] - offset <= second_object.hitbox[3] < self.hitbox[3] + offset
-        bottom_edge_touches = self.hitbox[2] - offset <= second_object.hitbox[2] < self.hitbox[3] + offset 
-        return  (left_edge_touches or right_edge_touches) and (top_edge_touches or bottom_edge_touches)
-
+class Inky(Ghost):
+    def __init__(self, filename) -> None:
+        super().__init__(filename)
+    
+    def respawn(self):
+        return super().respawn()
+    
 
         
 
