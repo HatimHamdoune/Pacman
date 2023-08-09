@@ -166,6 +166,8 @@ class Pacman(Character):
         self.lives = 3
         self.current_model_index = 1
         self._model = self.current_sprites[self.current_model_index]
+        self.is_eating = True
+        self.chomp_sound = pygame.mixer.Sound("./audio/munch.wav")
 
     @property
     def hitbox(self):
@@ -213,6 +215,11 @@ class Pacman(Character):
             self.current_sprites = self.sprites["up"]
             self._model = self.current_sprites[2]
 
+    def play_sound(self):
+        pygame.mixer.init()
+        pygame.mixer.set_num_channels(1)
+        if self.is_eating:
+            self.chomp_sound.play()
 
     def respawn(self):
         self.x_coordinate = 1
@@ -223,14 +230,19 @@ class Pacman(Character):
         if self.x_matrix < 0 or self.x_matrix >= len(map.map_matrix[0]):
             pass
         elif map.map_matrix[self.y_matrix][self.x_matrix] == map.SMALL_PELLET:
+            self.is_eating = True
             self.points += 10
             map.map_matrix[self.y_matrix][self.x_matrix] = map.EMPTY_WAY
         #if pacman's position has a large pellet (3) give points turn invincible mode on and change it to empty tile (1)
         elif map.map_matrix[self.y_matrix][self.x_matrix] == map.POWER_PELLET:
+            self.is_eating = True
             pygame.time.set_timer(Pacman.INVINCIBILITY_TIMER_OFF, 5000)
             self.points += 50
             self.invincible = True
             map.map_matrix[self.y_matrix][self.x_matrix] = map.EMPTY_WAY
+        else:
+            self.is_eating = False
+        self.play_sound()
     
 
     
