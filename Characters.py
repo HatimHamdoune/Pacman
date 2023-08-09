@@ -66,18 +66,24 @@ class Character:
     def left_is_free(self, map):
         turn_direction_x = self.x_matrix - 1
         turn_direction_y = self.y_matrix
-        if map.map_matrix[turn_direction_y][turn_direction_x] > 0:
+        try:
+            if map.map_matrix[turn_direction_y][turn_direction_x] > 0:
+                return True
+            else:
+                return False
+        except IndexError:
             return True
-        else:
-            return False
 
     def right_is_free(self, map):
         turn_direction_x = self.x_matrix + 1
         turn_direction_y = self.y_matrix
-        if map.map_matrix[turn_direction_y][turn_direction_x] > 0:
+        try:
+            if map.map_matrix[turn_direction_y][turn_direction_x] > 0:
+                return True
+            else:
+                return False
+        except IndexError:
             return True
-        else:
-            return False
 
     def up_is_free(self, map):
         turn_direction_x = self.x_matrix
@@ -107,6 +113,10 @@ class Character:
                 self.x_matrix += 1
             if self.looking_left:
                 self.x_matrix -= 1
+        if self.x_matrix < 0:
+            self.x_matrix = len(map.map_matrix[0])
+        elif self.x_matrix >= len(map.map_matrix[0]):
+            self.x_matrix = -1
         self.eat_pellets(map)
 
     def turn(self, direction, map):
@@ -194,7 +204,9 @@ class Pacman(Character):
     
     def eat_pellets(self, map):
         #if pacman's position has a small pellet (2) give points and change it to empty tile (1)
-        if map.map_matrix[self.y_matrix][self.x_matrix] == 2:
+        if self.x_matrix < 0 or self.x_matrix >= len(map.map_matrix[0]):
+            pass
+        elif map.map_matrix[self.y_matrix][self.x_matrix] == 2:
             self.points += 10
             map.map_matrix[self.y_matrix][self.x_matrix] = 1
         #if pacman's position has a large pellet (3) give points turn invincible mode on and change it to empty tile (1)
