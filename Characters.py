@@ -141,6 +141,7 @@ class Pacman(Character):
     NUMBER_OF_MODELS = 3
     DISTANCE_FROM_WALL = 8 
     MAP_TILE_SIZE = 20
+    INVINCIBILITY_TIMER_OFF = 1337
     def __init__(self, filename) -> None:
         super().__init__(filename)
         self.x_matrix = 1
@@ -152,7 +153,7 @@ class Pacman(Character):
         self.sprites["left"] = self.rotate_90_degrees(self.sprites["up"])
         self.sprites["down"] = self.rotate_90_degrees(self.sprites["left"])
         self.current_sprites = self.sprites["right"]
-        self._model = self.sprites["right"][1]
+        self._model = self.current_sprites[1]
 
     @property
     def hitbox(self):
@@ -165,6 +166,12 @@ class Pacman(Character):
     @property
     def y_coordinate(self):
         return self.y_matrix * Pacman.MAP_TILE_SIZE - Pacman.DISTANCE_FROM_WALL
+
+    def check_status(self):
+        if self.invincible:
+            print("is invincible")
+        else:
+            print("not invincible anymore")
 
     def check_direction(self):
         if self.looking_right:
@@ -192,6 +199,7 @@ class Pacman(Character):
             map.map_matrix[self.y_matrix][self.x_matrix] = 1
         #if pacman's position has a large pellet (3) give points turn invincible mode on and change it to empty tile (1)
         elif map.map_matrix[self.y_matrix][self.x_matrix] == 3:
+            pygame.time.set_timer(Pacman.INVINCIBILITY_TIMER_OFF, 5000)
             self.points += 50
             self.invincible = True
             map.map_matrix[self.y_matrix][self.x_matrix] = 1

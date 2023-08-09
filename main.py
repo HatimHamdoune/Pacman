@@ -7,6 +7,8 @@ class Game:
     WINDOW_WIDTH = 560
     #Colors
     WHITE = (255, 255, 255)
+    #invincibility timer
+    INVINCIBLITY_TIMER_OFF = 1337
     def __init__(self) -> None:
         pygame.init()
         self.window_size = Game.WINDOW_WIDTH, Game.WINDOW_HEIGHT
@@ -49,6 +51,8 @@ class Game:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                     exit()
+            if event.type == Game.INVINCIBLITY_TIMER_OFF:
+                self.pacman.invincible = False
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_a:
                     self.pacman.turn("left", self.map)
@@ -60,6 +64,7 @@ class Game:
                     self.pacman.turn("down", self.map)
     
     def check_events(self):
+        self.pacman.check_status()
         self.pacman.move(self.map)
 
     def display_ready(self):
@@ -87,9 +92,12 @@ class Game:
         self.display_score()
         if self.is_new_game:
             self.display_ready()      
+        
         pygame.display.flip()
         self.clock.tick(9)
 
+    def display_invincibility(self):
+        self.pacman._model = self.pacman.current_sprites[0]
 class Scoreboard:
     DISTANCE_FROM_WALL = 8
     def __init__(self) -> None:
