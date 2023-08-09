@@ -3,7 +3,7 @@ import pygame
 
 class Game:
     #constants to represent the window size
-    WINDOW_HEIGHT = 670
+    WINDOW_HEIGHT = 700
     WINDOW_WIDTH = 560
     #Colors
     WHITE = (255, 255, 255)
@@ -79,25 +79,37 @@ class Game:
         score_x_window = score_x_matrix * self.map.TILE_SIZE - Scoreboard.DISTANCE_FROM_WALL 
         score_y_window = score_y_matrix * self.map.TILE_SIZE - Scoreboard.DISTANCE_FROM_WALL
         self.window.blit(self.scoreboard.score(self.pacman.points), (score_x_window, score_y_window))
-         
-    def refresh_screen(self):
-        self.window.fill((0, 0, 0))
+
+    def display_lives(self):
+        life_x_matrix = 1
+        life_y_matrix = 33
+        for life in range(self.pacman.lives):
+            life_x_window = life_x_matrix * self.map.TILE_SIZE - Scoreboard.DISTANCE_FROM_WALL
+            life_y_window = life_y_matrix * self.map.TILE_SIZE
+            self.window.blit(self.scoreboard.life(self.pacman), (life_x_window, life_y_window))
+            life_x_matrix += 1
+            
+    def draw_map(self):
         for row in range(len(self.map.map_matrix)):
             for column in range(len(self.map.map_matrix[row])):
-                if self.map.map_matrix[row][column] == 1:
+                if self.map.map_matrix[row][column] == self.map.EMPTY_WAY:
                     self.window.blit(self.map.empty_block, (column * self.map.tile_size, row * self.map.tile_size))
                 else:
                     self.window.blit(self.map.map_tiles[row][column], (column * self.map.tile_size, row * self.map.tile_size))
+
+    def refresh_screen(self):
+        self.window.fill((0, 0, 0))
+        self.draw_map()
         self.window.blit(self.pacman.model, (self.pacman.x_coordinate, self.pacman.y_coordinate))
         self.display_score()
         if self.is_new_game:
             self.display_ready()      
-        
+        self.display_lives() 
         pygame.display.flip()
         self.clock.tick(9)
 
-    def display_invincibility(self):
-        self.pacman._model = self.pacman.current_sprites[0]
+
+
 class Scoreboard:
     DISTANCE_FROM_WALL = 8
     def __init__(self) -> None:
@@ -113,11 +125,20 @@ class Scoreboard:
         score = self.font.render(f"{current_score} pts", True, Game.WHITE)
         return score
 
+    def life(self, pacman):
+        lives_image = pacman.sprites["right"][1]
+        lives_image = pygame.transform.scale(lives_image, (Map.TILE_SIZE, Map.TILE_SIZE))
+        return lives_image
+
 class Map:
     #hard coded the map dimensions and tile size
     MAP_HEIGHT = 620
     MAP_WIDTH = 560
     TILE_SIZE = 20
+    WALL = 0
+    EMPTY_WAY = 1
+    SMALL_PELLET = 2
+    POWER_PELLET = 3
     def __init__(self, filename, map_start_x) -> None:
         self.spritesheet = pygame.image.load(filename)
         self.tile_size = Map.TILE_SIZE

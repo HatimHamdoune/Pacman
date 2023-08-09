@@ -164,6 +164,7 @@ class Pacman(Character):
         self.sprites["down"] = self.rotate_90_degrees(self.sprites["left"])
         self.current_sprites = self.sprites["right"]
         self._model = self.current_sprites[1]
+        self.lives = 3
 
     @property
     def hitbox(self):
@@ -230,13 +231,10 @@ class Ghost(Character):
     def __init__(self, filename) -> None:
         super().__init__(filename)
         
-
 class Inky(Ghost):
     def __init__(self, filename) -> None:
         super().__init__(filename)
     
-    def respawn(self):
-        return super().respawn()
     
 
         
