@@ -18,6 +18,7 @@ class Game:
         pacman_icon = pygame.image.load("pacman.ico")
         pygame.display.set_icon(pacman_icon)
         self.is_new_game = True
+        self.framerate = 10
 
         self.map = Map("SpriteSheet.png", 0)
         self.scoreboard = Scoreboard()
@@ -100,14 +101,18 @@ class Game:
     def refresh_screen(self):
         self.window.fill((0, 0, 0))
         self.draw_map()
-        self.window.blit(self.pacman.model, (self.pacman.x_coordinate, self.pacman.y_coordinate))
+        self.animate_pacman()
         self.display_score()
         if self.is_new_game:
             self.display_ready()      
         self.display_lives() 
         pygame.display.flip()
-        self.clock.tick(9)
+        self.clock.tick(self.framerate)
 
+    def animate_pacman(self):
+            self.pacman.next_model()
+            self.window.blit(self.pacman.model, (self.pacman.x_coordinate, self.pacman.y_coordinate))
+            pygame.display.update()
 
 
 class Scoreboard:

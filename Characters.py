@@ -163,8 +163,9 @@ class Pacman(Character):
         self.sprites["left"] = self.rotate_90_degrees(self.sprites["up"])
         self.sprites["down"] = self.rotate_90_degrees(self.sprites["left"])
         self.current_sprites = self.sprites["right"]
-        self._model = self.current_sprites[1]
         self.lives = 3
+        self.current_model_index = 1
+        self._model = self.current_sprites[self.current_model_index]
 
     @property
     def hitbox(self):
@@ -177,6 +178,20 @@ class Pacman(Character):
     @property
     def y_coordinate(self):
         return self.y_matrix * Pacman.MAP_TILE_SIZE - Pacman.DISTANCE_FROM_WALL
+    
+    @property
+    def model(self):
+        return self.current_sprites[self.current_model_index]
+
+    def next_model(self):
+        if self.can_move:
+            self.current_model_index += 1
+            if self.current_model_index >= len(self.current_sprites):
+                self.current_model_index = 0
+        else:
+            self.current_model_index = 1
+        
+        
 
     def check_status(self):
         if self.invincible:
@@ -207,15 +222,15 @@ class Pacman(Character):
         #if pacman's position has a small pellet (2) give points and change it to empty tile (1)
         if self.x_matrix < 0 or self.x_matrix >= len(map.map_matrix[0]):
             pass
-        elif map.map_matrix[self.y_matrix][self.x_matrix] == 2:
+        elif map.map_matrix[self.y_matrix][self.x_matrix] == map.SMALL_PELLET:
             self.points += 10
-            map.map_matrix[self.y_matrix][self.x_matrix] = 1
+            map.map_matrix[self.y_matrix][self.x_matrix] = map.EMPTY_WAY
         #if pacman's position has a large pellet (3) give points turn invincible mode on and change it to empty tile (1)
-        elif map.map_matrix[self.y_matrix][self.x_matrix] == 3:
+        elif map.map_matrix[self.y_matrix][self.x_matrix] == map.POWER_PELLET:
             pygame.time.set_timer(Pacman.INVINCIBILITY_TIMER_OFF, 5000)
             self.points += 50
             self.invincible = True
-            map.map_matrix[self.y_matrix][self.x_matrix] = 1
+            map.map_matrix[self.y_matrix][self.x_matrix] = map.EMPTY_WAY
     
 
     
