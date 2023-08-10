@@ -168,6 +168,7 @@ class Pacman(Character):
         self._model = self.current_sprites[self.current_model_index]
         self.is_eating = True
         self.chomp_sound = pygame.mixer.Sound("./audio/munch.wav")
+        self.power_pellet_sound = pygame.mixer.Sound("./audio/power_pellet.wav")
 
     @property
     def hitbox(self):
@@ -196,10 +197,8 @@ class Pacman(Character):
         
 
     def check_status(self):
-        if self.invincible:
-            print("is invincible")
-        else:
-            print("not invincible anymore")
+        self.play_sound()
+        
 
     def check_direction(self):
         if self.looking_right:
@@ -220,6 +219,9 @@ class Pacman(Character):
         pygame.mixer.set_num_channels(1)
         if self.is_eating:
             self.chomp_sound.play()
+        if self.invincible:
+            self.chomp_sound.stop()
+            self.power_pellet_sound.play()
 
     def respawn(self):
         self.x_coordinate = 1
@@ -242,7 +244,6 @@ class Pacman(Character):
             map.map_matrix[self.y_matrix][self.x_matrix] = map.EMPTY_WAY
         else:
             self.is_eating = False
-        self.play_sound()
     
 
     
