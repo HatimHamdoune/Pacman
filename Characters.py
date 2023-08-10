@@ -1,6 +1,8 @@
 import pygame
 
 class Character:
+    DISTANCE_FROM_WALL = 8 
+    MAP_TILE_SIZE = 20
     def __init__(self, filename) -> None:
         self.spritesheet = SpriteSheet(filename)
         self.y_matrix = 0
@@ -24,6 +26,15 @@ class Character:
     @property
     def sprite_collection(self):
         return self._sprites
+
+    @property
+    def x_coordinate(self):
+        return self.x_matrix * Character.MAP_TILE_SIZE - Character.DISTANCE_FROM_WALL
+
+    @property
+    def y_coordinate(self):
+        return self.y_matrix * Character.MAP_TILE_SIZE - Character.DISTANCE_FROM_WALL
+
 
     def rotate_90_degrees(self, sprites):
         #used to rotate the character models after extracting them from the spritesheet, only used for pacman
@@ -62,6 +73,15 @@ class Character:
                   self.can_move = True
             else:
                 self.can_move = False
+
+    def next_model(self):
+        if self.can_move:
+            self.current_model_index += 1
+            if self.current_model_index >= len(self.current_sprites):
+                self.current_model_index = 0
+        else:
+            self.current_model_index = 1
+     
 
     def left_is_free(self, map):
         turn_direction_x = self.x_matrix - 1
@@ -147,10 +167,8 @@ class Character:
 
 class Pacman(Character):
     MODEL_WIDTH, MODEL_HEIGHT = 39 , 35
-    SPRITE_LOCATION = 1140
+    SPRITE_LOCATION_X, SPRITE_LOCATION_Y = 1140, 0
     NUMBER_OF_MODELS = 3
-    DISTANCE_FROM_WALL = 8 
-    MAP_TILE_SIZE = 20
     INVINCIBILITY_TIMER_OFF = 1337
     def __init__(self, filename) -> None:
         super().__init__(filename)
@@ -158,7 +176,7 @@ class Pacman(Character):
         self.y_matrix = 1
         self.invincible = False
         self.points = 0
-        self.sprites["right"] = self.spritesheet.get_sprites(Pacman.SPRITE_LOCATION, Pacman.NUMBER_OF_MODELS, Pacman.MODEL_WIDTH, Pacman.MODEL_HEIGHT)
+        self.sprites["right"] = self.spritesheet.get_sprites(Pacman.SPRITE_LOCATION_X, Pacman.SPRITE_LOCATION_Y,  Pacman.NUMBER_OF_MODELS, Pacman.MODEL_WIDTH, Pacman.MODEL_HEIGHT)
         self.sprites["up"] = self.rotate_90_degrees(self.sprites["right"])
         self.sprites["left"] = self.rotate_90_degrees(self.sprites["up"])
         self.sprites["down"] = self.rotate_90_degrees(self.sprites["left"])
@@ -174,26 +192,12 @@ class Pacman(Character):
     def hitbox(self):
         return self.x_coordinate, self.x_coordinate + Pacman.MODEL_WIDTH, self.y_coordinate, self.y_coordinate + Pacman.MODEL_HEIGHT
 
-    @property
-    def x_coordinate(self):
-        return self.x_matrix * Pacman.MAP_TILE_SIZE - Pacman.DISTANCE_FROM_WALL
-
-    @property
-    def y_coordinate(self):
-        return self.y_matrix * Pacman.MAP_TILE_SIZE - Pacman.DISTANCE_FROM_WALL
-    
+        
     @property
     def model(self):
         return self.current_sprites[self.current_model_index]
 
-    def next_model(self):
-        if self.can_move:
-            self.current_model_index += 1
-            if self.current_model_index >= len(self.current_sprites):
-                self.current_model_index = 0
-        else:
-            self.current_model_index = 1
-        
+       
         
 
     def check_status(self):
@@ -220,7 +224,6 @@ class Pacman(Character):
         if self.is_eating:
             self.chomp_sound.play()
         if self.invincible:
-            self.chomp_sound.stop()
             self.power_pellet_sound.play()
 
     def respawn(self):
@@ -259,22 +262,33 @@ class Ghost(Character):
     def __init__(self, filename) -> None:
         super().__init__(filename)
         
-class Inky(Ghost):
+class Blinky(Ghost):
+    MODEL_WIDTH, MODEL_HEIGHT = 39 , 40
+    NUMBER_OF_MODELS = 8
+    SPRITE_LOCATION_X, SPRITE_LOCATION_Y = 1140, 159
+    DISTANCE_FROM_WALL = 8 
     def __init__(self, filename) -> None:
         super().__init__(filename)
-    
-    
+        self.x_matrix = 13
+        self.y_matrix = 11
+        self.sprites["right"] = self.spritesheet.get_sprites(Blinky.SPRITE_LOCATION_X, Blinky.SPRITE_LOCATION_Y,  Blinky.NUMBER_OF_MODELS, Blinky.MODEL_WIDTH, Blinky.MODEL_HEIGHT)[:2]
+        self.sprites["left"] = self.spritesheet.get_sprites(Blinky.SPRITE_LOCATION_X, Blinky.SPRITE_LOCATION_Y,  Blinky.NUMBER_OF_MODELS, Blinky.MODEL_WIDTH, Blinky.MODEL_HEIGHT)[2:4]
+        self.sprites["up"] = self.spritesheet.get_sprites(Blinky.SPRITE_LOCATION_X, Blinky.SPRITE_LOCATION_Y,  Blinky.NUMBER_OF_MODELS, Blinky.MODEL_WIDTH, Blinky.MODEL_HEIGHT)[4:6]
+        self.sprites["down"] = self.spritesheet.get_sprites(Blinky.SPRITE_LOCATION_X, Blinky.SPRITE_LOCATION_Y,  Blinky.NUMBER_OF_MODELS, Blinky.MODEL_WIDTH, Blinky.MODEL_HEIGHT)[6:]
+        self.current_sprites = self.sprites["right"]
+        self.current_model_index = 1
+        self._model = self.current_sprites[self.current_model_index]
 
-        
+    
 
 class SpriteSheet:
     def __init__(self, filename) -> None:
         self.spritesheet = pygame.image.load(filename)
 
-    def get_sprites(self, x_coordinate, n_sprites, character_width, character_height):
+    def get_sprites(self, x_coordinate, y_coordinate, n_sprites, character_width, character_height):
         #gets the number of sprites to be extracted (n_sprites), and extracts sprites accordingly
         sprites = []
         for i in range(n_sprites):
-            sprite = self.spritesheet.subsurface(pygame.Rect(x_coordinate + character_width * i, 0, character_width, character_height))
+            sprite = self.spritesheet.subsurface(pygame.Rect(x_coordinate + character_width * i, y_coordinate, character_width, character_height))
             sprites.append(sprite)
         return sprites

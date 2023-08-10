@@ -23,6 +23,7 @@ class Game:
         self.map = Map("SpriteSheet.png", 0)
         self.scoreboard = Scoreboard()
         self.pacman = Characters.Pacman("SpriteSheet.png")
+        self.blinky = Characters.Blinky("Spritesheet.png")
 
         self.main_loop()
 
@@ -45,7 +46,7 @@ class Game:
         pygame.mixer.music.load("./audio/beginning.wav")
         pygame.mixer.music.play()
         
-
+        
 
 
     def check_input(self):
@@ -102,6 +103,7 @@ class Game:
         self.window.fill((0, 0, 0))
         self.draw_map()
         self.animate_pacman()
+        self.animate_blinky()
         self.display_score()
         if self.is_new_game:
             self.display_ready()      
@@ -110,10 +112,13 @@ class Game:
         self.clock.tick(self.framerate)
 
     def animate_pacman(self):
-            self.pacman.next_model()
-            self.window.blit(self.pacman.model, (self.pacman.x_coordinate, self.pacman.y_coordinate))
-            pygame.display.update()
-
+        self.pacman.next_model()
+        self.window.blit(self.pacman.model, (self.pacman.x_coordinate, self.pacman.y_coordinate))
+        pygame.display.update()
+    
+    def animate_blinky(self):
+        self.blinky.next_model()
+        self.window.blit(self.blinky.model, (self.blinky.x_coordinate, self.blinky.y_coordinate))
 
 class Scoreboard:
     DISTANCE_FROM_WALL = 8
