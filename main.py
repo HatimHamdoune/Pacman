@@ -1,4 +1,5 @@
-import Characters
+import Pacman
+import Blinky
 import pygame
 
 class Game:
@@ -19,11 +20,13 @@ class Game:
         pygame.display.set_icon(pacman_icon)
         self.is_new_game = True
         self.framerate = 5
+        self.lives = 3
 
         self.map = Map("SpriteSheet.png", 0)
         self.scoreboard = Scoreboard()
-        self.pacman = Characters.Pacman("SpriteSheet.png")
-        self.blinky = Characters.Blinky("Spritesheet.png")
+        self.pacman = Pacman.Pacman("SpriteSheet.png")
+        self.blinky = Blinky.Blinky("Spritesheet.png")
+        self.ghosts = [self.blinky]
 
         self.main_loop()
 
@@ -66,7 +69,7 @@ class Game:
                     self.pacman.turn("down", self.map)
     
     def check_events(self):
-        self.pacman.check_status()
+        self.pacman.check_status(self.ghosts)
         self.pacman.move(self.map)
 
     def display_ready(self):
@@ -85,7 +88,7 @@ class Game:
     def display_lives(self):
         life_x_matrix = 1
         life_y_matrix = 33
-        for life in range(self.pacman.lives):
+        for life in range(self.lives):
             life_x_window = life_x_matrix * self.map.TILE_SIZE - Scoreboard.DISTANCE_FROM_WALL
             life_y_window = life_y_matrix * self.map.TILE_SIZE
             self.window.blit(self.scoreboard.life(self.pacman), (life_x_window, life_y_window))
