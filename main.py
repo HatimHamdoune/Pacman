@@ -102,8 +102,8 @@ class Game:
     def refresh_screen(self):
         self.window.fill((0, 0, 0))
         self.draw_map()
-        self.animate_pacman()
         self.animate_blinky()
+        self.animate_pacman()
         self.display_score()
         if self.is_new_game:
             self.display_ready()      
