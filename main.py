@@ -18,7 +18,7 @@ class Game:
         pacman_icon = pygame.image.load("pacman.ico")
         pygame.display.set_icon(pacman_icon)
         self.is_new_game = True
-        self.framerate = 10
+        self.framerate = 5
 
         self.map = Map("SpriteSheet.png", 0)
         self.scoreboard = Scoreboard()

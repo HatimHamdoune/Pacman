@@ -108,18 +108,24 @@ class Character:
     def up_is_free(self, map):
         turn_direction_x = self.x_matrix
         turn_direction_y = self.y_matrix - 1
-        if map.map_matrix[turn_direction_y][turn_direction_x] > 0:
+        try:
+            if map.map_matrix[turn_direction_y][turn_direction_x] > 0:
+                return True
+            else:
+                return False
+        except:
             return True
-        else:
-            return False
 
     def down_is_free(self, map):
         turn_direction_x = self.x_matrix
         turn_direction_y = self.y_matrix + 1
-        if map.map_matrix[turn_direction_y][turn_direction_x] > 0:
+        try:
+            if map.map_matrix[turn_direction_y][turn_direction_x] > 0:
+                return True
+            else:
+                return False
+        except IndexError:
             return True
-        else:
-            return False
 
     def move(self, map):
         self.check_for_walls(map)
@@ -187,6 +193,7 @@ class Pacman(Character):
         self.is_eating = True
         self.chomp_sound = pygame.mixer.Sound("./audio/munch.wav")
         self.power_pellet_sound = pygame.mixer.Sound("./audio/power_pellet.wav")
+        self.death_sound = pygame.mixer.Sound("./audio/death.wav")
 
     @property
     def hitbox(self):
@@ -197,12 +204,8 @@ class Pacman(Character):
     def model(self):
         return self.current_sprites[self.current_model_index]
 
-       
-        
-
     def check_status(self):
         self.play_sound()
-        
 
     def check_direction(self):
         if self.looking_right:
@@ -278,6 +281,7 @@ class Blinky(Ghost):
         self.current_sprites = self.sprites["right"]
         self.current_model_index = 1
         self._model = self.current_sprites[self.current_model_index]
+
 
     
 
