@@ -8,7 +8,7 @@ class Game:
     WINDOW_WIDTH = 560
     #Colors
     WHITE = (255, 255, 255)
-    #invincibility timer
+    #invincibility timer event constant, when pacman is no longer the timer triggers it so the main program catches it 
     INVINCIBLITY_TIMER_OFF = 1337
     def __init__(self) -> None:
         pygame.init()
@@ -19,7 +19,7 @@ class Game:
         pacman_icon = pygame.image.load("pacman.ico")
         pygame.display.set_icon(pacman_icon)
         self.is_new_game = True
-        self.framerate = 5
+        self.framerate = 9
         self.lives = 3
 
         self.map = Map("SpriteSheet.png", 0)
@@ -40,7 +40,7 @@ class Game:
             self.refresh_screen()
             if self.is_new_game:
                 self.new_game()
-                pygame.time.wait(4000)
+                pygame.time.wait(self.pacman.invincibility_duration)
                 self.is_new_game = False
             
     
@@ -69,8 +69,9 @@ class Game:
                     self.pacman.turn("down", self.map)
     
     def check_events(self):
-        self.pacman.check_status(self.ghosts)
-        self.pacman.move(self.map)
+        self.pacman.check_status(self.ghosts, self.map)
+    
+
 
     def display_ready(self):
         ready_x_matrix, ready_y_matrix = 12, 17
@@ -117,7 +118,6 @@ class Game:
     def animate_pacman(self):
         self.pacman.next_model()
         self.window.blit(self.pacman.model, (self.pacman.x_coordinate, self.pacman.y_coordinate))
-        pygame.display.update()
     
     def animate_blinky(self):
         self.blinky.next_model()
@@ -181,7 +181,7 @@ class Map:
                            [0,2,2,2,2,2,2,2,2,2,2,2,2,0,0,2,2,2,2,2,2,2,2,2,2,2,2,0],
                            [0,2,0,0,0,0,2,0,0,0,0,0,2,0,0,2,0,0,0,0,0,2,0,0,0,0,2,0],
                            [0,2,0,0,0,0,2,0,0,0,0,0,2,0,0,2,0,0,0,0,0,2,0,0,0,0,2,0],
-                           [0,3,2,2,0,0,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,0,0,2,2,3,0],
+                           [0,3,2,2,0,0,2,2,2,2,2,2,2,1,1,2,2,2,2,2,2,2,0,0,2,2,3,0],
                            [0,0,0,2,0,0,2,0,0,2,0,0,0,0,0,0,0,0,2,0,0,2,0,0,2,0,0,0],
                            [0,0,0,2,0,0,2,0,0,2,0,0,0,0,0,0,0,0,2,0,0,2,0,0,2,0,0,0],
                            [0,2,2,2,2,2,2,0,0,2,2,2,2,0,0,2,2,2,2,0,0,2,2,2,2,2,2,0],

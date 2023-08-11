@@ -122,26 +122,6 @@ class Character:
             self.x_matrix = -1
         self.eat_pellets(map)
 
-    def turn(self, direction, map):
-        #used the reset directions function as a switch so only the triggered direction is set to True
-        if direction == "left":
-            if self.left_is_free(map):
-                self.reset_directions()
-                self.looking_left = True
-        if direction == "right":
-            if self.right_is_free(map):
-                self.reset_directions()
-                self.looking_right = True
-        if direction == "up":
-            if self.up_is_free(map):
-                self.reset_directions()
-                self.looking_up = True
-        if direction == "down":
-            if self.down_is_free(map):
-                self.reset_directions()
-                self.looking_down = True
-       
-
     
 class Ghost(Character):
     def __init__(self, filename) -> None:
@@ -153,10 +133,10 @@ class SpriteSheet:
     def __init__(self, filename) -> None:
         self.spritesheet = pygame.image.load(filename)
 
-    def get_sprites(self, x_coordinate, y_coordinate, n_sprites, character_width, character_height):
+    def get_sprites(self, x_coordinate, y_coordinate, n_sprites, character_width, character_height, tilt):
         #gets the number of sprites to be extracted (n_sprites), and extracts sprites accordingly
         sprites = []
         for i in range(n_sprites):
-            sprite = self.spritesheet.subsurface(pygame.Rect(x_coordinate + character_width * i, y_coordinate, character_width, character_height))
+            sprite = self.spritesheet.subsurface(pygame.Rect(x_coordinate + character_width * i, y_coordinate, character_width, character_height + (i * tilt)))
             sprites.append(sprite)
         return sprites
