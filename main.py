@@ -19,7 +19,7 @@ class Game:
         pacman_icon = pygame.image.load("pacman.ico")
         pygame.display.set_icon(pacman_icon)
         self.is_new_game = True
-        self.framerate = 9
+        self.framerate = 60
         self.lives = 3
 
         self.map = Map("SpriteSheet.png", 0)
@@ -44,7 +44,9 @@ class Game:
                 self.is_new_game = False
             if self.pacman.just_respawned:
                 self.display_ready()
+                self.lives -= 1
                 pygame.time.wait(1000)
+            pygame.time.wait(100)
             
     
     def new_game(self):
