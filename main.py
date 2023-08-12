@@ -42,6 +42,9 @@ class Game:
                 self.new_game()
                 pygame.time.wait(self.pacman.invincibility_duration)
                 self.is_new_game = False
+            if self.pacman.just_respawned:
+                self.display_ready()
+                pygame.time.wait(1000)
             
     
     def new_game(self):
@@ -109,6 +112,8 @@ class Game:
         self.animate_blinky()
         self.animate_pacman()
         self.display_score()
+        if self.pacman.just_respawned:
+                self.display_ready()
         if self.is_new_game:
             self.display_ready()      
         self.display_lives() 

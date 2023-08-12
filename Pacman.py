@@ -28,6 +28,7 @@ class Pacman(Character):
         self.power_pellet_sound = pygame.mixer.Sound("./audio/power_pellet.wav")
         self.death_sound = pygame.mixer.Sound("./audio/death.wav")
         self.dead = False
+        self.just_respawned = False
 
     @property
     def hitbox(self):
@@ -55,6 +56,7 @@ class Pacman(Character):
             if self.current_model_index >= len(self.current_sprites):
                 self.respawn()
         elif self.can_move:
+            self.just_respawned = False
             self.current_model_index += 1
             if self.current_model_index >= len(self.current_sprites):
                 self.current_model_index = 0
@@ -117,11 +119,13 @@ class Pacman(Character):
 
     def respawn(self):
         self.dead = False
+        self.just_respawned = True
         self.reset_directions()
         self.current_model_index = 0
         self.looking_right = True
         self.x_matrix = 1
         self.y_matrix = 1
+        
     
     def eat_pellets(self, map):
         #if pacman's position has a small pellet (2) give points and change it to empty tile (1)
