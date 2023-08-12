@@ -111,7 +111,8 @@ class Game:
     def refresh_screen(self):
         self.window.fill((0, 0, 0))
         self.draw_map()
-        self.animate_blinky()
+        if not self.pacman.dead:
+            self.animate_blinky()
         self.animate_pacman()
         self.display_score()
         if self.pacman.just_respawned:
