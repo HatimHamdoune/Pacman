@@ -120,12 +120,23 @@ class Character:
             self.x_matrix = len(map.map_matrix[0])
         elif self.x_matrix >= len(map.map_matrix[0]):
             self.x_matrix = -1
-        self.eat_pellets(map)
 
     
 class Ghost(Character):
+    MODEL_WIDTH, MODEL_HEIGHT = 39 , 40
+    MODEL_TILT = 0
+    SPRITE_FLEE_LOCATION_X, SPRITE_LOCATION_X, SPRITE_LOCATION_Y = 1460, 1140, 159
+    DISTANCE_FROM_WALL = 8 
+    NUMBER_OF_FLEE_MODELS = 4
     def __init__(self, filename) -> None:
         super().__init__(filename)
+        self.flee_sprites = self.spritesheet.get_sprites(Ghost.SPRITE_FLEE_LOCATION_X, Ghost.SPRITE_LOCATION_Y, Ghost.NUMBER_OF_FLEE_MODELS, Ghost.MODEL_WIDTH, Ghost.MODEL_HEIGHT, Ghost.MODEL_TILT)
+        self.fleeing = False
+        self.current_sprites = []
+    
+    def flee(self):
+        self.fleeing = True
+        self.current_sprites = self.flee_sprites
 
     
 
@@ -138,5 +149,6 @@ class SpriteSheet:
         sprites = []
         for i in range(n_sprites):
             sprite = self.spritesheet.subsurface(pygame.Rect(x_coordinate + character_width * i, y_coordinate, character_width, character_height + (i * tilt)))
+            print(f"--{x_coordinate}, {i}")
             sprites.append(sprite)
         return sprites

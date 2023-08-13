@@ -10,6 +10,7 @@ class Game:
     WHITE = (255, 255, 255)
     #invincibility timer event constant, when pacman is no longer the timer triggers it so the main program catches it 
     INVINCIBLITY_TIMER_OFF = 1337
+    READY_TIMER = 1000
     def __init__(self) -> None:
         pygame.init()
         self.window_size = Game.WINDOW_WIDTH, Game.WINDOW_HEIGHT
@@ -19,7 +20,7 @@ class Game:
         pacman_icon = pygame.image.load("pacman.ico")
         pygame.display.set_icon(pacman_icon)
         self.is_new_game = True
-        self.framerate = 60
+        self.framerate = 10
         self.lives = 3
 
         self.map = Map("SpriteSheet.png", 0)
@@ -45,8 +46,7 @@ class Game:
             if self.pacman.just_respawned:
                 self.display_ready()
                 self.lives -= 1
-                pygame.time.wait(1000)
-            pygame.time.wait(100)
+                pygame.time.wait(Game.READY_TIMER)
             
     
     def new_game(self):
@@ -63,6 +63,7 @@ class Game:
                     exit()
             if event.type == Game.INVINCIBLITY_TIMER_OFF:
                 self.pacman.invincible = False
+                self.blinky.fleeing = False
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_a:
                     self.pacman.turn("left", self.map)

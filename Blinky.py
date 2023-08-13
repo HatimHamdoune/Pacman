@@ -1,11 +1,7 @@
 from Characters import Character, Ghost
         
 class Blinky(Ghost):
-    MODEL_WIDTH, MODEL_HEIGHT = 39 , 40
-    MODEL_TILT = 0
     NUMBER_OF_MODELS = 8
-    SPRITE_LOCATION_X, SPRITE_LOCATION_Y = 1140, 159
-    DISTANCE_FROM_WALL = 8 
     def __init__(self, filename) -> None:
         super().__init__(filename)
         self.x_matrix = 13

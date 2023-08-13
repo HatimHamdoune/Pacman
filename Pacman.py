@@ -39,6 +39,7 @@ class Pacman(Character):
         return self.current_sprites[self.current_model_index]
 
     def check_status(self, ghosts, map):
+        self.eat_pellets(map, ghosts)
         self.check_for_death(ghosts)
         if not self.dead:
             self.move(map)
@@ -46,7 +47,7 @@ class Pacman(Character):
 
     def check_for_death(self, ghosts):
         for ghost in ghosts:
-            if self.touches_hitbox(ghost):
+            if self.touches_hitbox(ghost) and not self.invincible:
                 self.dead = True
                 self.current_sprites = self.sprites["dead"]
 
@@ -127,7 +128,7 @@ class Pacman(Character):
         self.y_matrix = 1
         
     
-    def eat_pellets(self, map):
+    def eat_pellets(self, map, ghosts):
         #if pacman's position has a small pellet (2) give points and change it to empty tile (1)
         if self.x_matrix < 0 or self.x_matrix >= len(map.map_matrix[0]):
             pass
@@ -141,6 +142,8 @@ class Pacman(Character):
             pygame.time.set_timer(Pacman.INVINCIBILITY_TIMER_OFF, 5000)
             self.points += 50
             self.invincible = True
+            for ghost in ghosts:
+                ghost.flee()
             map.map_matrix[self.y_matrix][self.x_matrix] = map.EMPTY_WAY
         else:
             self.is_eating = False
