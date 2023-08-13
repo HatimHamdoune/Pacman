@@ -12,6 +12,12 @@ class Character:
         self.looking_up = False
         self.looking_down = False
         self.sprites = {}
+        self.current_sprites = []
+        self.sprites["right"] = []
+        self.sprites["up"] = []
+        self.sprites["left"] = []
+        self.sprites["down"] = []
+        self.sprites["dead"] = []
         self.can_move = True
 
     @property
@@ -132,13 +138,21 @@ class Ghost(Character):
         super().__init__(filename)
         self.flee_sprites = self.spritesheet.get_sprites(Ghost.SPRITE_FLEE_LOCATION_X, Ghost.SPRITE_LOCATION_Y, Ghost.NUMBER_OF_FLEE_MODELS, Ghost.MODEL_WIDTH, Ghost.MODEL_HEIGHT, Ghost.MODEL_TILT)
         self.fleeing = False
-        self.current_sprites = []
     
     def flee(self):
         self.fleeing = True
         self.current_sprites = self.flee_sprites
-
     
+    def unflee(self):
+        self.fleeing = False
+        if self.looking_left:
+            self.current_sprites = self.sprites["left"]
+        if self.looking_right:
+            self.current_sprites = self.sprites["right"]
+        if self.looking_up:
+            self.current_sprites = self.sprites["up"]
+        if self.looking_down:
+            self.current_sprites = self.sprites["down"]   
 
 class SpriteSheet:
     def __init__(self, filename) -> None:

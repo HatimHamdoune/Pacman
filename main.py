@@ -63,7 +63,8 @@ class Game:
                     exit()
             if event.type == Game.INVINCIBLITY_TIMER_OFF:
                 self.pacman.invincible = False
-                self.blinky.fleeing = False
+                for ghost in self.ghosts:
+                    ghost.unflee()
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_a:
                     self.pacman.turn("left", self.map)
