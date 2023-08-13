@@ -1,4 +1,5 @@
 import pygame
+from random import choice
 
 class Character:
     DISTANCE_FROM_WALL = 8 
@@ -110,6 +111,37 @@ class Character:
         except IndexError:
             return True
 
+    def turn(self, direction, map):
+        #used the reset directions function as a switch so only the triggered direction is set to True
+        if direction == "left":
+            if self.left_is_free(map):
+                self.reset_directions()
+                self.looking_left = True
+        if direction == "right":
+            if self.right_is_free(map):
+                self.reset_directions()
+                self.looking_right = True
+        if direction == "up":
+            if self.up_is_free(map):
+                self.reset_directions()
+                self.looking_up = True
+        if direction == "down":
+            if self.down_is_free(map):
+                self.reset_directions()
+                self.looking_down = True
+
+
+    def check_direction(self):
+        if self.looking_right:
+            self.current_sprites = self.sprites["right"]
+        elif self.looking_left:
+            self.current_sprites = self.sprites["left"]
+        elif self.looking_down:
+            self.current_sprites = self.sprites["down"]
+        elif self.looking_up:
+            self.current_sprites = self.sprites["up"]
+
+
     def move(self, map):
         self.check_for_walls(map)
         self.check_direction()
@@ -129,9 +161,9 @@ class Character:
 
     
 class Ghost(Character):
-    MODEL_WIDTH, MODEL_HEIGHT = 39 , 40
+    MODEL_WIDTH, MODEL_HEIGHT = 40 , 40
     MODEL_TILT = 0
-    SPRITE_FLEE_LOCATION_X, SPRITE_LOCATION_X, SPRITE_LOCATION_Y = 1461, 1140, 159
+    SPRITE_FLEE_LOCATION_X, SPRITE_LOCATION_X, SPRITE_LOCATION_Y = 1461, 1142, 159
     DISTANCE_FROM_WALL = 8 
     NUMBER_OF_FLEE_MODELS = 4
     def __init__(self, filename) -> None:
@@ -153,6 +185,30 @@ class Ghost(Character):
             self.current_sprites = self.sprites["up"]
         if self.looking_down:
             self.current_sprites = self.sprites["down"]   
+    
+    def check_direction(self):
+        if not self.fleeing:
+            if self.looking_right:
+                self.current_sprites = self.sprites["right"]
+            elif self.looking_left:
+                self.current_sprites = self.sprites["left"]
+            elif self.looking_down:
+                self.current_sprites = self.sprites["down"]
+            elif self.looking_up:
+                self.current_sprites = self.sprites["up"]
+    
+    def roam(self, map):
+        self.move(map)
+        while not self.can_move:
+            random_direction = self.pick_direction(map)
+            self.turn(random_direction, map)
+            self.check_direction()
+            self.move(map)
+    
+    def pick_direction(self, map):
+        directions = "left", "right", "up", "down"
+        chosen_direction = choice(directions)
+        return chosen_direction
 
 class SpriteSheet:
     def __init__(self, filename) -> None:

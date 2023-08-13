@@ -31,8 +31,6 @@ class Game:
 
         self.main_loop()
 
-        
-
     def main_loop(self):
         while True:
             if not self.is_new_game:
@@ -48,15 +46,11 @@ class Game:
                 self.lives -= 1
                 pygame.time.wait(Game.READY_TIMER)
             
-    
     def new_game(self):
         pygame.mixer.init()
         pygame.mixer.music.load("./audio/beginning.wav")
         pygame.mixer.music.play()
         
-        
-
-
     def check_input(self):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -77,9 +71,9 @@ class Game:
     
     def check_events(self):
         self.pacman.check_status(self.ghosts, self.map)
+        for ghost in self.ghosts:
+            ghost.roam(self.map)
     
-
-
     def display_ready(self):
         ready_x_matrix, ready_y_matrix = 12, 17
         ready_x_window = ready_x_matrix * self.map.TILE_SIZE - Scoreboard.DISTANCE_FROM_WALL 

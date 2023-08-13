@@ -64,16 +64,6 @@ class Pacman(Character):
         else:
             self.current_model_index = 1           
 
-    def check_direction(self):
-        if self.looking_right:
-            self.current_sprites = self.sprites["right"]
-        elif self.looking_left:
-            self.current_sprites = self.sprites["left"]
-        elif self.looking_down:
-            self.current_sprites = self.sprites["down"]
-        elif self.looking_up:
-            self.current_sprites = self.sprites["up"]
-
     def play_sound(self):
         pygame.mixer.init()
         pygame.mixer.set_num_channels(1)
@@ -100,26 +90,7 @@ class Pacman(Character):
             return True
         return False
 
-    def turn(self, direction, map):
-        #used the reset directions function as a switch so only the triggered direction is set to True
-        if direction == "left":
-            if self.left_is_free(map):
-                self.reset_directions()
-                self.looking_left = True
-        if direction == "right":
-            if self.right_is_free(map):
-                self.reset_directions()
-                self.looking_right = True
-        if direction == "up":
-            if self.up_is_free(map):
-                self.reset_directions()
-                self.looking_up = True
-        if direction == "down":
-            if self.down_is_free(map):
-                self.reset_directions()
-                self.looking_down = True
-
-
+    
     def respawn(self):
         self.dead = False
         self.just_respawned = True
