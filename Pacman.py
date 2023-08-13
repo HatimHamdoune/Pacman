@@ -82,7 +82,9 @@ class Pacman(Character):
             self.death_sound.play()       
         elif self.invincible:
             self.power_pellet_sound.play()
-        elif self.is_eating:
+        elif not self.invincible:
+            self.power_pellet_sound.stop()
+        if self.is_eating:
             self.chomp_sound.play()
 
     def rotate_90_degrees(self, sprites):
