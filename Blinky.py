@@ -11,10 +11,7 @@ class Blinky(Ghost):
         self.sprites["up"] = self.spritesheet.get_sprites(Blinky.SPRITE_LOCATION_X, Blinky.SPRITE_LOCATION_Y,  Blinky.NUMBER_OF_MODELS, Blinky.MODEL_WIDTH, Blinky.MODEL_HEIGHT, Blinky.MODEL_TILT)[4:6]
         self.sprites["down"] = self.spritesheet.get_sprites(Blinky.SPRITE_LOCATION_X, Blinky.SPRITE_LOCATION_Y,  Blinky.NUMBER_OF_MODELS, Blinky.MODEL_WIDTH, Blinky.MODEL_HEIGHT, Blinky.MODEL_TILT)[6:]
         self.current_sprites = self.sprites["right"]
-        self.current_model_index = 1
         self._model = self.current_sprites[self.current_model_index]
 
-    @property
-    def model(self):
-        return self.current_sprites[self.current_model_index]
+
 

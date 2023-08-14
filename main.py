@@ -50,6 +50,10 @@ class Game:
         pygame.mixer.init()
         pygame.mixer.music.load("./audio/beginning.wav")
         pygame.mixer.music.play()
+    
+    def check_cleared_pellets(self):
+        if self.pacman.pellets_eaten % 244 == 0 and self.pacman.pellets_eaten != 0:
+            self.is_new_game = True
         
     def check_input(self):
         for event in pygame.event.get():
@@ -70,6 +74,7 @@ class Game:
                     self.pacman.turn("down", self.map)
     
     def check_events(self):
+        self.check_cleared_pellets()
         self.pacman.check_status(self.ghosts, self.map)
         for ghost in self.ghosts:
             ghost.roam(self.map)

@@ -29,6 +29,7 @@ class Pacman(Character):
         self.death_sound = pygame.mixer.Sound("./audio/death.wav")
         self.dead = False
         self.just_respawned = False
+        self.pellets_eaten = 0
 
     @property
     def hitbox(self):
@@ -109,12 +110,14 @@ class Pacman(Character):
             self.is_eating = True
             self.points += 10
             map.map_matrix[self.y_matrix][self.x_matrix] = map.EMPTY_WAY
+            self.pellets_eaten += 1
         #if pacman's position has a large pellet (3) give points turn invincible mode on and change it to empty tile (1)
         elif map.map_matrix[self.y_matrix][self.x_matrix] == map.POWER_PELLET:
             self.is_eating = True
             pygame.time.set_timer(Pacman.INVINCIBILITY_TIMER_OFF, 5000)
             self.points += 50
             self.invincible = True
+            self.pellets_eaten += 1
             for ghost in ghosts:
                 ghost.flee()
             map.map_matrix[self.y_matrix][self.x_matrix] = map.EMPTY_WAY

@@ -170,6 +170,11 @@ class Ghost(Character):
         super().__init__(filename)
         self.flee_sprites = self.spritesheet.get_sprites(Ghost.SPRITE_FLEE_LOCATION_X, Ghost.SPRITE_LOCATION_Y, Ghost.NUMBER_OF_FLEE_MODELS, Ghost.MODEL_WIDTH, Ghost.MODEL_HEIGHT, Ghost.MODEL_TILT)
         self.fleeing = False
+        self.current_model_index = 1
+
+    @property
+    def model(self):
+        return self.current_sprites[self.current_model_index]
     
     def flee(self):
         self.fleeing = True
@@ -200,12 +205,12 @@ class Ghost(Character):
     def roam(self, map):
         self.move(map)
         while not self.can_move:
-            random_direction = self.pick_direction(map)
+            random_direction = self.pick_direction()
             self.turn(random_direction, map)
             self.check_direction()
             self.move(map)
     
-    def pick_direction(self, map):
+    def pick_direction(self):
         directions = "left", "right", "up", "down"
         chosen_direction = choice(directions)
         return chosen_direction
