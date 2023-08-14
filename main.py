@@ -79,11 +79,11 @@ class Game:
                     self.pacman.turn("down", self.map)
     
     def check_events(self):
-        self.check_cleared_pellets()
         self.pacman.check_status(self.ghosts, self.map)
         for ghost in self.ghosts:
             ghost.roam(self.map)
-    
+        self.check_cleared_pellets()
+
     def display_ready(self):
         ready_x_matrix, ready_y_matrix = 12, 17
         ready_x_window = ready_x_matrix * self.map.TILE_SIZE - Scoreboard.DISTANCE_FROM_WALL 
