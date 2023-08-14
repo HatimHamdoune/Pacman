@@ -46,6 +46,12 @@ class Pacman(Character):
             self.move(map)
         self.play_sound()
 
+    def map_cleared(self):
+        return self.pellets_eaten % 244 == 0 and self.pellets_eaten != 0
+    
+    def clear_pellets(self):
+        self.pellets_eaten = 0
+
     def check_for_death(self, ghosts):
         for ghost in ghosts:
             if self.touches_hitbox(ghost) and not self.invincible:
