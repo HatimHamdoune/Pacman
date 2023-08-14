@@ -57,6 +57,8 @@ class Game:
             self.pacman.clear_pellets()
             self.map.new_level()
             self.pacman.respawn()
+            for ghost in self.ghosts:
+                ghost.respawn()
         
     def check_input(self):
         for event in pygame.event.get():
@@ -120,7 +122,9 @@ class Game:
         self.animate_pacman()
         self.display_score()
         if self.pacman.just_respawned:
-                self.display_ready()
+            for ghost in self.ghosts:
+                ghost.respawn()
+            self.display_ready()
         if self.is_new_game:
             self.display_ready()      
         self.display_lives() 

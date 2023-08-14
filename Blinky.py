@@ -1,6 +1,8 @@
 from Characters import Character, Ghost
         
 class Blinky(Ghost):
+    SPAWN_X = 13
+    SPAWN_Y = 11
     NUMBER_OF_MODELS = 8
     def __init__(self, filename) -> None:
         super().__init__(filename)
@@ -13,5 +15,7 @@ class Blinky(Ghost):
         self.current_sprites = self.sprites["right"]
         self._model = self.current_sprites[self.current_model_index]
 
+    def respawn(self):
+        self.x_matrix, self.y_matrix = Blinky.SPAWN_X, Blinky.SPAWN_Y
 
 
