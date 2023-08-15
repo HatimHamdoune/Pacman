@@ -1,4 +1,4 @@
-from Characters import Character
+from Characters import Character, Ghost
 import pygame
 
 class Pacman(Character):
@@ -92,9 +92,18 @@ class Pacman(Character):
             rotated_sprites.append(pygame.transform.rotate(sprite, rotation_angle))
         return rotated_sprites
 
-    def touches_hitbox(self, second_object):
-        if self.coordinates == second_object.coordinates:
-            return True
+    def touches_hitbox(self, ghost):
+        offset = 2
+        if self.y_matrix == ghost.y_matrix:
+            if self.x_coordinate - offset < ghost.x_coordinate < self.x_coordinate + Pacman.MODEL_WIDTH + offset:
+                return True
+            if self.x_coordinate - offset < ghost.x_coordinate + Ghost.MODEL_WIDTH < self.x_coordinate + Pacman.MODEL_WIDTH + offset:
+                return True
+        if self.x_matrix == ghost.x_matrix:
+            if self.y_coordinate - offset < ghost.y_coordinate < self.y_coordinate + Pacman.MODEL_HEIGHT + offset:
+                return True
+            if self.y_coordinate - offset < ghost.y_coordinate + Ghost.MODEL_HEIGHT < self.y_coordinate + Pacman.MODEL_HEIGHT + offset:
+                return True
         return False
 
     
