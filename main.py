@@ -82,6 +82,8 @@ class Game:
         self.pacman.check_status(self.ghosts, self.map)
         for ghost in self.ghosts:
             ghost.roam(self.map)
+        if self.pacman.check_extra_life():
+            self.lives += 1
         self.check_cleared_pellets()
 
     def display_ready(self):

@@ -27,9 +27,12 @@ class Pacman(Character):
         self.chomp_sound = pygame.mixer.Sound("./audio/munch.wav")
         self.power_pellet_sound = pygame.mixer.Sound("./audio/power_pellet.wav")
         self.death_sound = pygame.mixer.Sound("./audio/death.wav")
+        self.new_life_sound = pygame.mixer.Sound("./audio/extrapac.wav")
         self.dead = False
         self.just_respawned = False
         self.pellets_eaten = 0
+        self.last_life_gained_at = 1
+        self.got_new_life = False
 
     @property
     def hitbox(self):
@@ -45,6 +48,12 @@ class Pacman(Character):
         if not self.dead:
             self.move(map)
         self.play_sound()
+    
+    def check_extra_life(self):
+        if self.points % 10000 == 0 and self.points != self.last_life_gained_at:
+            self.last_life_gained_at = self.points
+            self.got_new_life = True
+            return True
 
     def map_cleared(self):
         return self.pellets_eaten % 244 == 0 and self.pellets_eaten != 0
@@ -73,10 +82,13 @@ class Pacman(Character):
 
     def play_sound(self):
         pygame.mixer.init()
-        pygame.mixer.set_num_channels(1)
+        pygame.mixer.set_num_channels(2)
         if self.dead:
             self.power_pellet_sound.stop()
             self.death_sound.play()       
+        if self.got_new_life:
+            self.new_life_sound.play()
+            self.got_new_life = False
         elif self.invincible:
             self.power_pellet_sound.play()
         elif not self.invincible:
