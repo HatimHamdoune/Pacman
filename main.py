@@ -22,6 +22,7 @@ class Game:
         self.is_new_game = True
         self.framerate = 10
         self.lives = 3
+        self.level = 1
 
         self.map = Map("SpriteSheet.png", 0)
         self.scoreboard = Scoreboard()
@@ -59,6 +60,7 @@ class Game:
             self.pacman.respawn()
             for ghost in self.ghosts:
                 ghost.respawn()
+            self.level += 1
         
     def check_input(self):
         for event in pygame.event.get():
