@@ -6,8 +6,8 @@ class Blinky(Ghost):
     NUMBER_OF_MODELS = 8
     def __init__(self, filename) -> None:
         super().__init__(filename)
-        self.x_matrix = 13
-        self.y_matrix = 11
+        self.x_matrix = Blinky.SPAWN_X
+        self.y_matrix = Blinky.SPAWN_Y
         self.sprites["right"] = self.spritesheet.get_sprites(Blinky.SPRITE_LOCATION_X, Blinky.SPRITE_LOCATION_Y,  Blinky.NUMBER_OF_MODELS, Blinky.MODEL_WIDTH, Blinky.MODEL_HEIGHT, Blinky.MODEL_TILT)[:2]
         self.sprites["left"] = self.spritesheet.get_sprites(Blinky.SPRITE_LOCATION_X, Blinky.SPRITE_LOCATION_Y,  Blinky.NUMBER_OF_MODELS, Blinky.MODEL_WIDTH, Blinky.MODEL_HEIGHT, Blinky.MODEL_TILT)[2:4]
         self.sprites["up"] = self.spritesheet.get_sprites(Blinky.SPRITE_LOCATION_X, Blinky.SPRITE_LOCATION_Y,  Blinky.NUMBER_OF_MODELS, Blinky.MODEL_WIDTH, Blinky.MODEL_HEIGHT, Blinky.MODEL_TILT)[4:6]

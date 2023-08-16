@@ -1,5 +1,6 @@
 import Pacman
 import Blinky
+import Inky
 import pygame
 
 class Game:
@@ -28,6 +29,7 @@ class Game:
         self.scoreboard = Scoreboard()
         self.pacman = Pacman.Pacman("SpriteSheet.png")
         self.blinky = Blinky.Blinky("Spritesheet.png")
+        self.inky = Inky.Inky("SpriteSheet.png")
         self.ghosts = [self.blinky]
 
         self.main_loop()
@@ -123,6 +125,7 @@ class Game:
         self.draw_map()
         if not self.pacman.dead:
             self.animate_blinky()
+            self.animate_inky()
         self.animate_pacman()
         self.display_score()
         if self.pacman.just_respawned:
@@ -142,6 +145,10 @@ class Game:
     def animate_blinky(self):
         self.blinky.next_model()
         self.window.blit(self.blinky.model, (self.blinky.x_coordinate, self.blinky.y_coordinate))
+
+    def animate_inky(self):
+        self.inky.next_model()
+        self.window.blit(self.inky.model, (self.inky.x_coordinate, self.inky.y_coordinate))
 
 class Scoreboard:
     DISTANCE_FROM_WALL = 8
