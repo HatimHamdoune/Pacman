@@ -82,7 +82,7 @@ class Pacman(Character):
 
     def play_sound(self):
         pygame.mixer.init()
-        pygame.mixer.set_num_channels(2)
+        pygame.mixer.set_num_channels(1)
         if self.dead:
             self.power_pellet_sound.stop()
             self.death_sound.play()       
