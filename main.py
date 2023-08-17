@@ -102,6 +102,13 @@ class Game:
         score_x_window = score_x_matrix * self.map.TILE_SIZE - Scoreboard.DISTANCE_FROM_WALL 
         score_y_window = score_y_matrix * self.map.TILE_SIZE - Scoreboard.DISTANCE_FROM_WALL
         self.window.blit(self.scoreboard.score(self.pacman.points), (score_x_window, score_y_window))
+    
+    def display_level(self):
+        level_x_matrix = 19
+        level_y_matrix = 32
+        level_x_window = level_x_matrix * self.map.TILE_SIZE - Scoreboard.DISTANCE_FROM_WALL 
+        level_y_window = level_y_matrix * self.map.TILE_SIZE - Scoreboard.DISTANCE_FROM_WALL
+        self.window.blit(self.scoreboard.levels(self.level), (level_x_window, level_y_window))
 
     def display_lives(self):
         life_x_matrix = 1
@@ -128,6 +135,7 @@ class Game:
             self.animate_inky()
         self.animate_pacman()
         self.display_score()
+        self.display_level()
         if self.pacman.just_respawned:
             for ghost in self.ghosts:
                 ghost.respawn()
@@ -160,6 +168,10 @@ class Scoreboard:
     def ready(self):
         ready_message = self.font.render("Ready!", True, Game.WHITE)
         return ready_message
+
+    def levels(self, level):
+        level_display = self.font.render(f"Level: {level}", True, Game.WHITE)
+        return level_display
 
     def score(self, current_score):
         score = self.font.render(f"{current_score} pts", True, Game.WHITE)
