@@ -69,7 +69,7 @@ class Game:
             if event.type == pygame.QUIT:
                     exit()
             if event.type == Game.INVINCIBLITY_TIMER_OFF:
-                self.pacman.invincible = False
+                self.pacman.lose_invincibility()
                 for ghost in self.ghosts:
                     ghost.unflee()
             if event.type == pygame.KEYDOWN:

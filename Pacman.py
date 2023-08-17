@@ -128,6 +128,11 @@ class Pacman(Character):
         self.x_matrix = 1
         self.y_matrix = 1
         
+    def lose_invincibility(self):
+        self.invincible = False
+
+    def turn_invincible(self):
+        self.invincible = True
     
     def eat_pellets(self, map, ghosts):
         #if pacman's position has a small pellet (2) give points and change it to empty tile (1)
@@ -143,6 +148,7 @@ class Pacman(Character):
             self.is_eating = True
             pygame.time.set_timer(Pacman.INVINCIBILITY_TIMER_OFF, 5000)
             self.points += 50
+            self.turn_invincible()
             self.invincible = True
             self.pellets_eaten += 1
             for ghost in ghosts:
