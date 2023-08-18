@@ -89,7 +89,9 @@ class Game:
             if self.pacman.invincible:
                 ghost.flee()
                 if self.pacman.touches_hitbox(ghost):
+                    ghost.unflee()
                     ghost.respawn()
+                    self.pacman.points += 500
         if self.pacman.check_extra_life():
             self.lives += 1
         self.check_cleared_pellets()
