@@ -30,7 +30,7 @@ class Game:
         self.pacman = Pacman.Pacman("SpriteSheet.png")
         self.blinky = Blinky.Blinky("Spritesheet.png")
         self.inky = Inky.Inky("SpriteSheet.png")
-        self.ghosts = [self.blinky]
+        self.ghosts = [self.blinky, self.inky]
 
         self.main_loop()
 
@@ -86,6 +86,10 @@ class Game:
         self.pacman.check_status(self.ghosts, self.map)
         for ghost in self.ghosts:
             ghost.roam(self.map)
+            if self.pacman.invincible:
+                ghost.flee()
+                if self.pacman.touches_hitbox(ghost):
+                    ghost.respawn()
         if self.pacman.check_extra_life():
             self.lives += 1
         self.check_cleared_pellets()

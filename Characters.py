@@ -179,6 +179,7 @@ class Ghost(Character):
     def flee(self):
         self.fleeing = True
         self.current_sprites = self.flee_sprites
+
     
     def unflee(self):
         self.fleeing = False

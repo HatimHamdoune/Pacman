@@ -151,8 +151,6 @@ class Pacman(Character):
             self.turn_invincible()
             self.invincible = True
             self.pellets_eaten += 1
-            for ghost in ghosts:
-                ghost.flee()
             map.map_matrix[self.y_matrix][self.x_matrix] = map.EMPTY_WAY
         else:
             self.is_eating = False
