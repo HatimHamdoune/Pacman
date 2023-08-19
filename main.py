@@ -1,6 +1,7 @@
 import Pacman
 import Blinky
 import Inky
+import Clyde
 import pygame
 
 class Game:
@@ -30,7 +31,8 @@ class Game:
         self.pacman = Pacman.Pacman("SpriteSheet.png")
         self.blinky = Blinky.Blinky("Spritesheet.png")
         self.inky = Inky.Inky("SpriteSheet.png")
-        self.ghosts = [self.blinky, self.inky]
+        self.clyde = Clyde.Clyde("SpriteSheet.png")
+        self.ghosts = [self.blinky, self.inky, self.clyde]
 
         self.main_loop()
 
