@@ -165,6 +165,10 @@ class Game:
     def animate_inky(self):
         self.inky.next_model()
         self.window.blit(self.inky.model, (self.inky.x_coordinate, self.inky.y_coordinate))
+    
+    def animate_clyde(self):
+        self.clyde.next_model()
+        self.window.blit(self.clyde.model, (self.clyde.x_coordinate, self.clyde.y_coordinate))
 
 class Scoreboard:
     DISTANCE_FROM_WALL = 8
