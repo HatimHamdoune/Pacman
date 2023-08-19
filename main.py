@@ -141,6 +141,7 @@ class Game:
         if not self.pacman.dead:
             self.animate_blinky()
             self.animate_inky()
+            self.animate_clyde()
         self.animate_pacman()
         self.display_score()
         self.display_level()
