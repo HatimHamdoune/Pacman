@@ -2,6 +2,7 @@ import Pacman
 import Blinky
 import Inky
 import Clyde
+import Pinky
 import pygame
 
 class Game:
@@ -32,6 +33,7 @@ class Game:
         self.blinky = Blinky.Blinky("Spritesheet.png")
         self.inky = Inky.Inky("SpriteSheet.png")
         self.clyde = Clyde.Clyde("SpriteSheet.png")
+        self.pinky = Pinky.Pinky("SpriteSheet.png")
         self.ghosts = [self.blinky, self.inky, self.clyde]
 
         self.main_loop()
@@ -170,6 +172,8 @@ class Game:
     def animate_clyde(self):
         self.clyde.next_model()
         self.window.blit(self.clyde.model, (self.clyde.x_coordinate, self.clyde.y_coordinate))
+
+   
 
 class Scoreboard:
     DISTANCE_FROM_WALL = 8
