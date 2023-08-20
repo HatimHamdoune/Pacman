@@ -2,7 +2,7 @@ from Characters import Character, Ghost
         
 class Pinky(Ghost):
     SPRITE_LOCATION_X, SPRITE_LOCATION_Y = 1140, 280
-    SPAWN_X = 14
+    SPAWN_X = 16
     SPAWN_Y = 14
     NUMBER_OF_MODELS = 8
     def __init__(self, filename) -> None:
