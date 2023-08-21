@@ -144,6 +144,7 @@ class Game:
             self.animate_blinky()
             self.animate_inky()
             self.animate_clyde()
+            self.animate_pinky()
         self.animate_pacman()
         self.display_score()
         self.display_level()
@@ -173,6 +174,9 @@ class Game:
         self.clyde.next_model()
         self.window.blit(self.clyde.model, (self.clyde.x_coordinate, self.clyde.y_coordinate))
 
+    def animate_pinky(self):
+        self.pinky.next_model()
+        self.window.blit(self.pinky.model, (self.pinky.x_coordinate, self.pinky.y_coordinate))
    
 
 class Scoreboard:
