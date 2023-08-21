@@ -34,7 +34,7 @@ class Game:
         self.inky = Inky.Inky("SpriteSheet.png")
         self.clyde = Clyde.Clyde("SpriteSheet.png")
         self.pinky = Pinky.Pinky("SpriteSheet.png")
-        self.ghosts = [self.blinky, self.inky, self.clyde]
+        self.ghosts = [self.blinky, self.inky, self.clyde, self.pinky]
 
         self.main_loop()
 
@@ -141,10 +141,7 @@ class Game:
         self.window.fill((0, 0, 0))
         self.draw_map()
         if not self.pacman.dead:
-            self.animate_blinky()
-            self.animate_inky()
-            self.animate_clyde()
-            self.animate_pinky()
+            self.animate_ghosts() 
         self.animate_pacman()
         self.display_score()
         self.display_level()
@@ -162,7 +159,7 @@ class Game:
         self.pacman.next_model()
         self.window.blit(self.pacman.model, (self.pacman.x_coordinate, self.pacman.y_coordinate))
     
-    def animate_ghost(self):
+    def animate_ghosts(self):
         for ghost in self.ghosts:
             ghost.next_model()
             self.window.blit(ghost.model, (ghost.x_coordinate, ghost.y_coordinate))
