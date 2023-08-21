@@ -162,22 +162,11 @@ class Game:
         self.pacman.next_model()
         self.window.blit(self.pacman.model, (self.pacman.x_coordinate, self.pacman.y_coordinate))
     
-    def animate_blinky(self):
-        self.blinky.next_model()
-        self.window.blit(self.blinky.model, (self.blinky.x_coordinate, self.blinky.y_coordinate))
-
-    def animate_inky(self):
-        self.inky.next_model()
-        self.window.blit(self.inky.model, (self.inky.x_coordinate, self.inky.y_coordinate))
-    
-    def animate_clyde(self):
-        self.clyde.next_model()
-        self.window.blit(self.clyde.model, (self.clyde.x_coordinate, self.clyde.y_coordinate))
-
-    def animate_pinky(self):
-        self.pinky.next_model()
-        self.window.blit(self.pinky.model, (self.pinky.x_coordinate, self.pinky.y_coordinate))
-   
+    def animate_ghost(self):
+        for ghost in self.ghosts:
+            ghost.next_model()
+            self.window.blit(ghost.model, (ghost.x_coordinate, ghost.y_coordinate))
+  
 
 class Scoreboard:
     DISTANCE_FROM_WALL = 8
